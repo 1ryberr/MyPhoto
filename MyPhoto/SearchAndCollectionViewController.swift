@@ -17,13 +17,15 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var noImage: UILabel!
-     @IBOutlet weak var SearchBTN: UIBarButtonItem!
+    @IBOutlet weak var SearchBTN: UIBarButtonItem!
     
+    @IBOutlet weak var tempLabel: UILabel!
     
     
     
     var coordinates = CLLocationCoordinate2D()
     var photos = [String]()
+    var weather = [Double]()
     let FLICKER_API_KEY = "5502594069909ec1c701e8582fdfa052"
     let WEATHER_MAP_KEY =  "645ed60a8e4bfce83c50f48532f8a957"
     var img : UIImage!
@@ -32,61 +34,19 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
     
     
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = URL(string:  "https://api.openweathermap.org/data/2.5/weather?&lat=38.385111000000002&lon=-78.975020999999998&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957")
-        
-        var request = URLRequest(url: url!)
-     //   request.httpMethod = "GET"
-      //  request.addValue("application/json", forHTTPHeaderField: "content-type")
-      
         
         
-        let config = URLSessionConfiguration.default
-        config.waitsForConnectivity = true
-        config.allowsCellularAccess = true
         
         
-     //   let defaultSession
-          // = URLSession(configuration: config)
-        
-        
-     URLSession.shared.dataTask(with: request) { (data, response, error) in
-            
-            
-            func sendError(_ error: String) {
-                print(error)
-                let userInfo = [NSLocalizedDescriptionKey : error]
-                //completionHandlerForPOST(nil, NSError(domain: "getStudentInfo", code: 1, userInfo: userInfo))
-            }
-            
-            guard (error == nil) else {
-              print("There was an error with your request: \(error?.localizedDescription)")
-                return
-            }
-            
-            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-               print("Your request returned a status code other than 2xx!")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data was returned by the request!")
-                return
-            }
-        
- let dataAsString = String(data: data, encoding: .utf8)
-        
-        print(dataAsString)
-        }
-     .resume()
-        
- 
         
         
     }
- 
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -148,7 +108,7 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
                 self.map.setRegion(region, animated: true)
                 self.getFlickData(coordinates: self.coordinates)
-                
+                self.getWeatherData(coordinates: self.coordinates)
                 print(self.coordinates)
             }
             
@@ -173,12 +133,33 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
         
     }
     
+    func getWeatherData(coordinates: CLLocationCoordinate2D){
+        let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
+            
+            guard (error == nil) else {
+                print("\(error!)")
+                return
+            }
+            
+            self.weather = weatherData!
+            
+            DispatchQueue.main.async {
+                self.tempLabel.text = "\(round((weatherData?[0])!))"
+                
+                
+            }
+            print(self.weather)
+            
+        })
+        
+    }
     
-   
+    
     @IBAction func SearchActBTN(_ sender: Any) {
         
-     flipMap()
-        
+        flipMap()
+        searchTextField.resignFirstResponder()
         
         
     }
@@ -221,6 +202,14 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         return CGSize(width:(UIScreen.main.bounds.width - 20)/3, height:(UIScreen.main.bounds.width - 20)/3)
+    }
+    
+}
+extension SearchAndCollectionViewController: UITextFieldDelegate{
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
 }

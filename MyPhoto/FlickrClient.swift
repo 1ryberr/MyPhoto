@@ -14,7 +14,7 @@ class FlickrClient: NSObject{
     
     static let sharedInstance = FlickrClient()
     private override init() {}
-  
+    
     func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [String]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         var myImages = [String]()
@@ -52,7 +52,7 @@ class FlickrClient: NSObject{
                 sendError("No data was returned by the request!")
                 return
             }
-        
+            
             let code : FlickrPagedImageResult
             do {
                 code = try JSONDecoder().decode(FlickrPagedImageResult.self, from: data)
@@ -76,5 +76,73 @@ class FlickrClient: NSObject{
         task.resume()
         return task
     }
+    
+    func displayWeatherBySearch(url: String, completionHandlerForPOST: @escaping (_ weather: [Double]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+        
+        var weatherData = [Double]()
+        
+        let url = URL(string: url)
+        
+        var request = URLRequest(url: url!)
+        
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+        config.allowsCellularAccess = true
+        
+        
+        let defaultSession = URLSession(configuration: config)
+        
+        
+        let task = defaultSession.dataTask(with: request) { (data, response, error) in
+            
+            
+            func sendError(_ error: String) {
+                print(error)
+                let userInfo = [NSLocalizedDescriptionKey : error]
+                completionHandlerForPOST(nil, NSError(domain: "getStudentInfo", code: 1, userInfo: userInfo))
+            }
+            
+            guard (error == nil) else {
+                sendError("There was an error with your request: \(error?.localizedDescription)")
+                return
+            }
+            
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                sendError("Your request returned a status code other than 2xx!")
+                return
+            }
+            
+            guard let data = data else {
+                sendError("No data was returned by the request!")
+                return
+            }
+            
+            let dataAsString = String(data: data, encoding: .utf8)
+            //print(dataAsString!)
+            
+            let decoder = JSONDecoder()
+            let weather: OpenWeatherData
+            do{
+                weather = try decoder.decode(OpenWeatherData.self, from: data)
+                weatherData.append(weather.main.temp)
+                weatherData.append(weather.main.humidity)
+                weatherData.append(weather.main.tempMax)
+                weatherData.append(weather.main.tempMin)
+             
+                print(weather.main.temp)
+            }catch{
+                 sendError("Could not parse the data as JSON: '\(data)'")
+            }
+            
+            completionHandlerForPOST(weatherData, nil)
+            
+        }
+        task.resume()
+        
+        
+        return task
+    }
+    
+    
     
 }

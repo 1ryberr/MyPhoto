@@ -28,3 +28,23 @@ struct Photo: Codable {
     let url_m: String
     
 }
+
+
+struct OpenWeatherData: Codable{
+    var main: Main
+}
+
+struct Main: Codable {
+    let  temp: Double
+    let humidity: Double
+    let tempMin: Double
+    let tempMax:Double
+    
+    enum CodingKeys: String, CodingKey{
+        case temp
+        case humidity
+        case tempMin = "temp_min"
+        case tempMax = "temp_max"
+    }
+}
+    
