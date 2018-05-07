@@ -118,7 +118,7 @@ class FlickrClient: NSObject{
             }
             
             let dataAsString = String(data: data, encoding: .utf8)
-            //print(dataAsString!)
+            print(dataAsString!)
             
             let decoder = JSONDecoder()
             let weather: OpenWeatherData
@@ -129,7 +129,6 @@ class FlickrClient: NSObject{
                 weatherData.append(weather.main.tempMax)
                 weatherData.append(weather.main.tempMin)
              
-                print(weather.main.temp)
             }catch{
                  sendError("Could not parse the data as JSON: '\(data)'")
             }

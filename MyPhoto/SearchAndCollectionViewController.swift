@@ -8,19 +8,21 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
-
-class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
+class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchView: UIView!
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var noImage: UILabel!
-    @IBOutlet weak var SearchBTN: UIBarButtonItem!
-    
+    @IBOutlet weak var SearchBTN: UIBarButtonItem!    
     @IBOutlet weak var tempLabel: UILabel!
-    
+    @IBOutlet weak var humidityLabel: UILabel!
+    @IBOutlet weak var highsLabels: UILabel!
+    @IBOutlet weak var lowsLabel: UILabel!
+    @IBOutlet weak var cityLabel: UILabel!
     
     
     var coordinates = CLLocationCoordinate2D()
@@ -29,28 +31,64 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
     let FLICKER_API_KEY = "5502594069909ec1c701e8582fdfa052"
     let WEATHER_MAP_KEY =  "645ed60a8e4bfce83c50f48532f8a957"
     var img : UIImage!
-    var city: String!
-    
-    
-    
-    
+    let locationManager = CLLocationManager()
+
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
-        
-        
-        
+        labelFunction(label: cityLabel, text: "City", color: UIColor.black)
+        labelFunction(label: tempLabel, text: "0", color: UIColor.black)
+        labelFunction(label: humidityLabel, text: "0", color: UIColor.black)
+        labelFunction(label: highsLabels, text: "0", color: UIColor.black)
+        labelFunction(label: lowsLabel, text: "0", color: UIColor.black)
+
+        getCurrentLocation()
         
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func getCurrentLocation() {
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
+        if let lastLocation = self.locationManager.location {
+            let geocoder = CLGeocoder()
+            
+            geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+                guard (error == nil) else {
+                    print("\(error!)")
+                    let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
+                    
+                    let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                        self.dismiss(animated: true, completion: {})
+                    })
+                    alert.addAction(actionOK)
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                }
+              
+                let city = placemarks![0].locality
+                self.getMapByAddress(map:self.map, address:city!)
+             
+            })
+        }
     }
+    
+    func labelFunction(label: UILabel, text: String, color: UIColor) {
+        
+        let attrs = [NSAttributedStringKey.foregroundColor: color,
+                     NSAttributedStringKey.font: UIFont(name: "Georgia-Bold", size: 24)!,
+                     NSAttributedStringKey.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
+        
+        let string = NSAttributedString(string: text, attributes: attrs)
+        label.attributedText = string
+        
+    }
+    
     func flipMap() {
         
         let transitionOptions: UIViewAnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
@@ -65,8 +103,6 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
         self.searchView.isHidden = false
         
     }
-    
-    
     
     func flip() {
         
@@ -101,15 +137,13 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
             }
             
             if let validPlacemark = placemarks?[0]{
-                self.flip()
                 self.coordinates = (validPlacemark.location?.coordinate)!
-                print()
                 let span = MKCoordinateSpanMake(0.04, 0.04)
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
                 self.map.setRegion(region, animated: true)
                 self.getFlickData(coordinates: self.coordinates)
                 self.getWeatherData(coordinates: self.coordinates)
-                print(self.coordinates)
+                self.cityLabel.text = placemarks![0].name
             }
             
         }
@@ -134,6 +168,7 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
     }
     
     func getWeatherData(coordinates: CLLocationCoordinate2D){
+        
         let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
         FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
             
@@ -145,11 +180,12 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
             self.weather = weatherData!
             
             DispatchQueue.main.async {
-                self.tempLabel.text = "\(round((weatherData?[0])!))"
-                
+                self.tempLabel.text = "\(Int(round((weatherData?[0])!)))"
+                self.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
+                self.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
+                self.lowsLabel.text = "\(Int(round((weatherData?[3])!)))"
                 
             }
-            print(self.weather)
             
         })
         
@@ -157,18 +193,13 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate {
     
     
     @IBAction func SearchActBTN(_ sender: Any) {
-        
-        flipMap()
-        searchTextField.resignFirstResponder()
-        
-        
+        map.isHidden ? flip():flipMap()
     }
     
-    
-    
     @IBAction func mapBTN(_ sender: Any) {
-        
+        searchTextField.resignFirstResponder()
         getMapByAddress(map: map, address: searchTextField.text!)
+        searchTextField.text = ""
         
     }
     
@@ -205,6 +236,7 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     }
     
 }
+
 extension SearchAndCollectionViewController: UITextFieldDelegate{
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

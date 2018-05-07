@@ -14,7 +14,6 @@ struct FlickrPagedImageResult:  Codable {
     let stat: String
     
 }
-
 struct Photos: Codable {
     let photo: [Photo]
     let page: Int
@@ -23,7 +22,6 @@ struct Photos: Codable {
     let total: String
     
 }
-
 struct Photo: Codable {
     let url_m: String
     
