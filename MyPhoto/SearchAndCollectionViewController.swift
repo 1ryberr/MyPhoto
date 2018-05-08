@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class SearchAndCollectionViewController: UIViewController,CLLocationManagerDelegate {
     
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchView: UIView!
@@ -32,8 +32,7 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CL
     let WEATHER_MAP_KEY =  "645ed60a8e4bfce83c50f48532f8a957"
     var img : UIImage!
     let locationManager = CLLocationManager()
-
-    
+    let geocoder = CLGeocoder()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +42,32 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CL
         labelFunction(label: humidityLabel, text: "0", color: UIColor.black)
         labelFunction(label: highsLabels, text: "0", color: UIColor.black)
         labelFunction(label: lowsLabel, text: "0", color: UIColor.black)
-
+        
         getCurrentLocation()
         
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
+        map.addGestureRecognizer(longPress)
+        
+    }
+    
+    func getCity(_ lastLocation: CLLocation) {
+        geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+            guard (error == nil) else {
+                print("\(error!)")
+                let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
+                
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                    self.dismiss(animated: true, completion: {})
+                })
+                alert.addAction(actionOK)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            
+            let city = placemarks![0].locality
+            self.getMapByAddress(map:self.map, address:city!)
+            
+        })
     }
     
     func getCurrentLocation() {
@@ -56,26 +78,29 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CL
         locationManager.startUpdatingLocation()
         
         if let lastLocation = self.locationManager.location {
-            let geocoder = CLGeocoder()
-            
-            geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
-                guard (error == nil) else {
-                    print("\(error!)")
-                    let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
-                    
-                    let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
-                        self.dismiss(animated: true, completion: {})
-                    })
-                    alert.addAction(actionOK)
-                    self.present(alert, animated: true, completion: nil)
-                    return
-                }
-              
-                let city = placemarks![0].locality
-                self.getMapByAddress(map:self.map, address:city!)
-             
-            })
+            getCity(lastLocation)
         }
+    }
+    
+    
+    @objc func addAnnotation(press: UILongPressGestureRecognizer){
+        
+        if press.state == .began{
+            let longTouchPoint = press.location(in: map)
+            let coordinates = map.convert(longTouchPoint, toCoordinateFrom: map)
+            pinCoordinates(coordinates)
+        }
+    }
+    
+    func pinCoordinates(_ coordinates: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinates
+        
+        let getLat: CLLocationDegrees = coordinates.latitude
+        let getLon: CLLocationDegrees = coordinates.longitude
+        let touchPoint: CLLocation =  CLLocation(latitude: getLat, longitude: getLon)
+        getCity(touchPoint)
+        map.addAnnotation(annotation)
     }
     
     func labelFunction(label: UILabel, text: String, color: UIColor) {
@@ -92,13 +117,10 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CL
     func flipMap() {
         
         let transitionOptions: UIViewAnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
-        
         UIView.transition(with: map, duration: 1.0, options: transitionOptions, animations: {
-            
         })
         self.map.isHidden = true
         UIView.transition(with: searchView, duration: 1.0, options: transitionOptions, animations: {
-            
         })
         self.searchView.isHidden = false
         
@@ -107,13 +129,10 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CL
     func flip() {
         
         let transitionOptions: UIViewAnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
-        
         UIView.transition(with: searchView, duration: 1.0, options: transitionOptions, animations: {
-            
         })
         self.searchView.isHidden = true
         UIView.transition(with: map, duration: 1.0, options: transitionOptions, animations: {
-            
         })
         self.map.isHidden = false
         
@@ -138,9 +157,11 @@ class SearchAndCollectionViewController: UIViewController, MKMapViewDelegate, CL
             
             if let validPlacemark = placemarks?[0]{
                 self.coordinates = (validPlacemark.location?.coordinate)!
-                let span = MKCoordinateSpanMake(0.04, 0.04)
+                let span = MKCoordinateSpanMake(0.05, 0.05)
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
+                self.map.setCenter(self.coordinates, animated: true)
                 self.map.setRegion(region, animated: true)
+                
                 self.getFlickData(coordinates: self.coordinates)
                 self.getWeatherData(coordinates: self.coordinates)
                 self.cityLabel.text = placemarks![0].name
@@ -244,4 +265,21 @@ extension SearchAndCollectionViewController: UITextFieldDelegate{
         return true
     }
     
+}
+extension SearchAndCollectionViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let identifier: String = "Pin"
+        
+        var annotationView = self.map.dequeueReusableAnnotationView(withIdentifier: identifier)
+        if annotationView == nil{
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = false
+        }else{
+            annotationView?.annotation = annotation
+            return annotationView
+        }
+        return annotationView
+    }
 }
