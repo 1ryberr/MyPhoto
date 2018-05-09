@@ -24,7 +24,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBOutlet weak var lowsLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     
-    
+    let imageCache = NSCache<NSString, UIImage>()
     var coordinates = CLLocationCoordinate2D()
     var photos = [String]()
     var weather = [Double]()
@@ -64,8 +64,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 return
             }
             
-            let city = placemarks![0].locality
-            self.getMapByAddress(map:self.map, address:city!)
+            let cityState = placemarks![0].locality! + "," + placemarks![0].administrativeArea!
+            self.getMapByAddress(map:self.map, address:cityState)
             
         })
     }
@@ -86,6 +86,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @objc func addAnnotation(press: UILongPressGestureRecognizer){
         
         if press.state == .began{
+              removePinCoordinates()
             let longTouchPoint = press.location(in: map)
             let coordinates = map.convert(longTouchPoint, toCoordinateFrom: map)
             pinCoordinates(coordinates)
@@ -138,6 +139,11 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
     }
     
+    func removePinCoordinates() {
+        let annotations = map.annotations
+        map.removeAnnotations(annotations)
+    }
+
     func getMapByAddress(map:MKMapView, address:String) {
         
         let geocoder = CLGeocoder()
@@ -147,7 +153,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
-                    //   LoginViewController.removeSpinner(spinner: self.sv)
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
@@ -156,10 +161,10 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             }
             
             if let validPlacemark = placemarks?[0]{
+              
                 self.coordinates = (validPlacemark.location?.coordinate)!
                 let span = MKCoordinateSpanMake(0.05, 0.05)
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
-                self.map.setCenter(self.coordinates, animated: true)
                 self.map.setRegion(region, animated: true)
                 
                 self.getFlickData(coordinates: self.coordinates)
@@ -181,6 +186,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             self.photos = myImages!
             
             DispatchQueue.main.async {
+                self.imageCache.removeAllObjects()
                 self.collectionView.reloadData()
             }
             
@@ -228,23 +234,34 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
 
 
 extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        photos.count == 0 ? !noImage.isHidden : noImage.isHidden
         return photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PhotoCollectionViewCell
+        
+        var spinnerView: UIView!
+        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
         DispatchQueue.global(qos:.userInitiated).async {
             let imageURL = URL(string: self.photos[indexPath.item])
             
-            if let imageData = try? Data(contentsOf: imageURL!){
-                
-                self.img = UIImage(data: imageData)!
-                
+            if let imageFromCache = self.imageCache.object(forKey: ((imageURL?.absoluteString)! + "\(indexPath.row)") as NSString) {
+                self.img = imageFromCache
+            }else{
+                if let imageData = try? Data(contentsOf: imageURL!){
+                    self.img = UIImage(data: imageData)!
+                    self.imageCache.setObject(self.img, forKey:((imageURL?.absoluteString)! + "\(indexPath.row)")as NSString)
+                    
+                }
             }
             DispatchQueue.main.async {
                 
                 cell.photoImage.image = self.img
+                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                 
             }
         }
@@ -266,6 +283,7 @@ extension SearchAndCollectionViewController: UITextFieldDelegate{
     }
     
 }
+
 extension SearchAndCollectionViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -282,4 +300,33 @@ extension SearchAndCollectionViewController: MKMapViewDelegate {
         }
         return annotationView
     }
+}
+
+extension  SearchAndCollectionViewController{
+    
+    class func displaySpinner(onView : UIView) -> UIView {
+        
+        let spinnerView = UIView.init(frame: onView.bounds)
+        spinnerView.backgroundColor = UIColor.darkGray
+        let ai = UIActivityIndicatorView.init(activityIndicatorStyle: .whiteLarge)
+        ai.startAnimating()
+        ai.center = spinnerView.center
+        DispatchQueue.main.async {
+            spinnerView.addSubview(ai)
+            onView.addSubview(spinnerView)
+        }
+        
+        return spinnerView
+    }
+    
+    class func removeSpinner(spinner :UIView) {
+        
+        DispatchQueue.main.async {
+            spinner.removeFromSuperview()
+            
+        }
+        
+    }
+    
+    
 }
