@@ -23,6 +23,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBOutlet weak var highsLabels: UILabel!
     @IBOutlet weak var lowsLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var flipViewBTN: UIBarButtonItem!
+    
+    
     
     let imageCache = NSCache<NSString, UIImage>()
     var coordinates = CLLocationCoordinate2D()
@@ -33,6 +36,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     var img : UIImage!
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -220,6 +224,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     
     @IBAction func SearchActBTN(_ sender: Any) {
+     
         map.isHidden ? flip():flipMap()
     }
     
@@ -249,13 +254,12 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         DispatchQueue.global(qos:.userInitiated).async {
             let imageURL = URL(string: self.photos[indexPath.item])
             
-            if let imageFromCache = self.imageCache.object(forKey: ((imageURL?.absoluteString)! + "\(indexPath.row)") as NSString) {
+            if let imageFromCache = self.imageCache.object(forKey: ((imageURL?.absoluteString)!) as NSString) {
                 self.img = imageFromCache
             }else{
                 if let imageData = try? Data(contentsOf: imageURL!){
                     self.img = UIImage(data: imageData)!
-                    self.imageCache.setObject(self.img, forKey:((imageURL?.absoluteString)! + "\(indexPath.row)")as NSString)
-                    
+                    self.imageCache.setObject(self.img, forKey:((imageURL?.absoluteString)!)as NSString)
                 }
             }
             DispatchQueue.main.async {
@@ -266,6 +270,18 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
             }
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        
+        let vc = storyboard.instantiateViewController(withIdentifier: "detail") as! PhotoViewController
+        
+        vc.photo = photos[indexPath.item]
+        
+      present(vc, animated: true)
+    
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

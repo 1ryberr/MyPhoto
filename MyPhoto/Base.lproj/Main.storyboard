@@ -227,6 +227,7 @@
                         <outlet property="SearchBTN" destination="qut-jV-hii" id="CLC-hE-oMc"/>
                         <outlet property="cityLabel" destination="exl-Es-rEF" id="b0b-nH-D23"/>
                         <outlet property="collectionView" destination="pQX-wH-kgL" id="i1q-uv-qYG"/>
+                        <outlet property="flipViewBTN" destination="qut-jV-hii" id="EH0-Ur-QOn"/>
                         <outlet property="highsLabels" destination="OsE-X4-Osy" id="N5r-KU-b6S"/>
                         <outlet property="humidityLabel" destination="iQu-qo-wzU" id="IzQ-qg-Bvs"/>
                         <outlet property="lowsLabel" destination="THa-pA-YNA" id="8tE-Jh-WOb"/>
@@ -240,6 +241,45 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="138.40000000000001" y="132.68365817091455"/>
+        </scene>
+        <!--Photo View Controller-->
+        <scene sceneID="iD6-O3-oqe">
+            <objects>
+                <viewController storyboardIdentifier="detail" id="uPX-ic-4GD" customClass="PhotoViewController" customModule="MyPhoto" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gQe-9Q-3kH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1QF-aS-BfS">
+                                <rect key="frame" x="8" y="20" width="359" height="262"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WVL-ND-bAt">
+                                <rect key="frame" x="170.5" y="379" width="34" height="30"/>
+                                <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="saveBTN:" destination="uPX-ic-4GD" eventType="touchUpInside" id="GJ3-nr-1cc"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="WVL-ND-bAt" firstAttribute="centerX" secondItem="OmP-8e-9mF" secondAttribute="centerX" id="3QJ-bX-DmM"/>
+                            <constraint firstItem="OmP-8e-9mF" firstAttribute="trailing" secondItem="1QF-aS-BfS" secondAttribute="trailing" constant="8" id="EdQ-70-Jx0"/>
+                            <constraint firstItem="1QF-aS-BfS" firstAttribute="leading" secondItem="OmP-8e-9mF" secondAttribute="leading" constant="8" id="HOk-AH-8VX"/>
+                            <constraint firstItem="1QF-aS-BfS" firstAttribute="top" secondItem="OmP-8e-9mF" secondAttribute="top" id="PEZ-V8-6xP"/>
+                            <constraint firstItem="WVL-ND-bAt" firstAttribute="top" secondItem="1QF-aS-BfS" secondAttribute="bottom" constant="97" id="dN0-ey-XFx"/>
+                            <constraint firstItem="OmP-8e-9mF" firstAttribute="bottom" secondItem="1QF-aS-BfS" secondAttribute="bottom" constant="385" id="wvm-50-rYk"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="OmP-8e-9mF"/>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="1QF-aS-BfS" id="59l-gs-hPQ"/>
+                        <outlet property="saveBtn" destination="WVL-ND-bAt" id="zXA-fn-ydi"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sXb-et-7H7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="964" y="148.87556221889056"/>
         </scene>
     </scenes>
 </document>
