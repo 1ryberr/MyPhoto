@@ -36,22 +36,28 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     var img : UIImage!
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
+    var city : String!
     
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        labelFunction(label: cityLabel, text: "City", color: UIColor.black)
-        labelFunction(label: tempLabel, text: "0", color: UIColor.black)
-        labelFunction(label: humidityLabel, text: "0", color: UIColor.black)
-        labelFunction(label: highsLabels, text: "0", color: UIColor.black)
-        labelFunction(label: lowsLabel, text: "0", color: UIColor.black)
+        labelsFormat()
         
         getCurrentLocation()
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
         map.addGestureRecognizer(longPress)
         
+    }
+    
+    func labelsFormat() {
+        labelFunction(label: cityLabel, text: "City", color: UIColor.black)
+        labelFunction(label: tempLabel, text: "0", color: UIColor.black)
+        labelFunction(label: humidityLabel, text: "0", color: UIColor.black)
+        labelFunction(label: highsLabels, text: "0", color: UIColor.black)
+        labelFunction(label: lowsLabel, text: "0", color: UIColor.black)
     }
     
     func getCity(_ lastLocation: CLLocation) {
@@ -173,7 +179,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 
                 self.getFlickData(coordinates: self.coordinates)
                 self.getWeatherData(coordinates: self.coordinates)
-                self.cityLabel.text = placemarks![0].name
+                self.city = placemarks![0].name
+                self.cityLabel.text = self.city
             }
             
         }
@@ -182,6 +189,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     func getFlickData(coordinates: CLLocationCoordinate2D) {
         
         let FLICKER_LINK = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(self.FLICKER_API_KEY)&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&extras=url_m&page=\(1)&format=json&nojsoncallback=1"
+        
+        
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url:FLICKER_LINK,completionHandlerForPOST: {myImages,error in
             guard (error == nil) else {
                 print("\(error!)")
@@ -190,8 +199,11 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             self.photos = myImages!
             
             DispatchQueue.main.async {
+              
                 self.imageCache.removeAllObjects()
                 self.collectionView.reloadData()
+                
+                
             }
             
         })
@@ -201,6 +213,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     func getWeatherData(coordinates: CLLocationCoordinate2D){
         
         let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
+        var spinnerView: UIView!
+        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
+        
         FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
             
             guard (error == nil) else {
@@ -215,7 +230,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 self.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
                 self.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
                 self.lowsLabel.text = "\(Int(round((weatherData?[3])!)))"
-                
+             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
             
         })
@@ -229,11 +244,29 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     }
     
     @IBAction func mapBTN(_ sender: Any) {
+        
         searchTextField.resignFirstResponder()
         getMapByAddress(map: map, address: searchTextField.text!)
         searchTextField.text = ""
         
     }
+    
+    
+    @IBAction func savedCities(_ sender: Any) {
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        
+        let vc = storyboard.instantiateViewController(withIdentifier: "savedCities") as! SavedCitiesViewController
+        
+        
+        
+        navigationController?.pushViewController(vc, animated: true)
+
+        
+        
+    }
+    
+    
     
 }
 
@@ -254,7 +287,7 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         DispatchQueue.global(qos:.userInitiated).async {
             let imageURL = URL(string: self.photos[indexPath.item])
             
-            if let imageFromCache = self.imageCache.object(forKey: ((imageURL?.absoluteString)!) as NSString) {
+            if let imageFromCache: UIImage = self.imageCache.object(forKey: ((imageURL?.absoluteString)!) as NSString) {
                 self.img = imageFromCache
             }else{
                 if let imageData = try? Data(contentsOf: imageURL!){
@@ -278,6 +311,9 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         
         let vc = storyboard.instantiateViewController(withIdentifier: "detail") as! PhotoViewController
         
+        vc.longitude = coordinates.longitude
+        vc.latitude = coordinates.latitude
+        vc.city = city
         vc.photo = photos[indexPath.item]
         
       present(vc, animated: true)
