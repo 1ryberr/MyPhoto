@@ -1,0 +1,49 @@
+//
+//  FavCityTableViewCell.swift
+//  MyPhoto
+//
+//  Created by Ryan Berry on 5/17/18.
+//  Copyright © 2018 Ryan Berry. All rights reserved.
+//
+
+import UIKit
+
+class FavCityTableViewCell: UITableViewCell {
+    
+    @IBOutlet weak var uiImageView: UIImageView!
+    @IBOutlet weak var labelView: UILabel!
+    
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        hide()
+    }
+    
+    
+    func animate(){
+        UIView.beginAnimations("", context: nil)
+        UIView.setAnimationDuration(0.7)
+        layer.transform = CATransform3DIdentity
+        alpha = 1
+        
+        UIView.commitAnimations()
+    }
+    
+    func hide() {
+        alpha = 0
+        layer.transform = CATransform3DMakeRotation((90.0 * .pi) / 180,0,0.3,0.2)
+        layer.anchorPoint = CGPoint(x: 0, y: 0)
+    }
+    
+    
+    
+
+}

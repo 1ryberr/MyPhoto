@@ -22,6 +22,7 @@
 		586490D720935F7D006B151A /* MyPhotoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586490D620935F7D006B151A /* MyPhotoTests.swift */; };
 		586490E220935F7D006B151A /* MyPhotoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586490E120935F7D006B151A /* MyPhotoUITests.swift */; };
 		586FF2B220ADE3FA00CCEAC3 /* SavedCitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586FF2B120ADE3FA00CCEAC3 /* SavedCitiesViewController.swift */; };
+		586FF2B420AE101200CCEAC3 /* FavCityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586FF2B320AE101200CCEAC3 /* FavCityTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		586490E120935F7D006B151A /* MyPhotoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPhotoUITests.swift; sourceTree = "<group>"; };
 		586490E320935F7D006B151A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		586FF2B120ADE3FA00CCEAC3 /* SavedCitiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCitiesViewController.swift; sourceTree = "<group>"; };
+		586FF2B320AE101200CCEAC3 /* FavCityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavCityTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				5829495120989DC7003A1AF6 /* SearchAndCollectionViewController.swift */,
 				584AD71E20AB333300B0D5A8 /* PhotoViewController.swift */,
 				586FF2B120ADE3FA00CCEAC3 /* SavedCitiesViewController.swift */,
+				586FF2B320AE101200CCEAC3 /* FavCityTableViewCell.swift */,
 				586490C220935F73006B151A /* Main.storyboard */,
 				586490C820935F7D006B151A /* Assets.xcassets */,
 				586490CA20935F7D006B151A /* LaunchScreen.storyboard */,
@@ -285,6 +288,7 @@
 				5829495020989880003A1AF6 /* DataFromFlickr.swift in Sources */,
 				586FF2B220ADE3FA00CCEAC3 /* SavedCitiesViewController.swift in Sources */,
 				5842342A20ADBDF700475DC8 /* CoreDataStack.swift in Sources */,
+				586FF2B420AE101200CCEAC3 /* FavCityTableViewCell.swift in Sources */,
 				586490BF20935F73006B151A /* AppDelegate.swift in Sources */,
 				5818C8D62098C7F600659296 /* PhotoCollectionViewCell.swift in Sources */,
 				584AD71F20AB333300B0D5A8 /* PhotoViewController.swift in Sources */,

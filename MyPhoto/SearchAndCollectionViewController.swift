@@ -38,15 +38,13 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     let geocoder = CLGeocoder()
     var city : String!
     
-   
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         labelsFormat()
-        
         getCurrentLocation()
-        
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
         map.addGestureRecognizer(longPress)
         
@@ -96,7 +94,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @objc func addAnnotation(press: UILongPressGestureRecognizer){
         
         if press.state == .began{
-              removePinCoordinates()
+            removePinCoordinates()
             let longTouchPoint = press.location(in: map)
             let coordinates = map.convert(longTouchPoint, toCoordinateFrom: map)
             pinCoordinates(coordinates)
@@ -153,7 +151,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         let annotations = map.annotations
         map.removeAnnotations(annotations)
     }
-
+    
     func getMapByAddress(map:MKMapView, address:String) {
         
         let geocoder = CLGeocoder()
@@ -171,7 +169,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             }
             
             if let validPlacemark = placemarks?[0]{
-              
+                
                 self.coordinates = (validPlacemark.location?.coordinate)!
                 let span = MKCoordinateSpanMake(0.05, 0.05)
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
@@ -189,8 +187,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     func getFlickData(coordinates: CLLocationCoordinate2D) {
         
         let FLICKER_LINK = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(self.FLICKER_API_KEY)&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&extras=url_m&page=\(1)&format=json&nojsoncallback=1"
-        
-        
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url:FLICKER_LINK,completionHandlerForPOST: {myImages,error in
             guard (error == nil) else {
                 print("\(error!)")
@@ -199,11 +195,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             self.photos = myImages!
             
             DispatchQueue.main.async {
-              
-                self.imageCache.removeAllObjects()
                 self.collectionView.reloadData()
-                
-                
             }
             
         })
@@ -230,7 +222,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 self.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
                 self.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
                 self.lowsLabel.text = "\(Int(round((weatherData?[3])!)))"
-             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
             
         })
@@ -239,7 +231,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     
     @IBAction func SearchActBTN(_ sender: Any) {
-     
+        
         map.isHidden ? flip():flipMap()
     }
     
@@ -255,53 +247,45 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBAction func savedCities(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        
         let vc = storyboard.instantiateViewController(withIdentifier: "savedCities") as! SavedCitiesViewController
-        
-        
-        
         navigationController?.pushViewController(vc, animated: true)
-
-        
         
     }
     
-    
-    
 }
-
 
 extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         photos.count == 0 ? !noImage.isHidden : noImage.isHidden
         return photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PhotoCollectionViewCell
-        
+      
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
-        DispatchQueue.global(qos:.userInitiated).async {
-            let imageURL = URL(string: self.photos[indexPath.item])
-            
-            if let imageFromCache: UIImage = self.imageCache.object(forKey: ((imageURL?.absoluteString)!) as NSString) {
-                self.img = imageFromCache
-            }else{
-                if let imageData = try? Data(contentsOf: imageURL!){
+        
+        if let imageFromCache: UIImage = self.imageCache.object(forKey: self.photos[indexPath.row] as NSString ) {
+                cell.photoImage.image = imageFromCache
+                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+        }else{
+            DispatchQueue.global().async {
+                let imageURL = URL(string: self.photos[indexPath.item])
+                if let imageData: Data = try? Data(contentsOf: imageURL!){
                     self.img = UIImage(data: imageData)!
-                    self.imageCache.setObject(self.img, forKey:((imageURL?.absoluteString)!)as NSString)
+                    self.imageCache.setObject(self.img, forKey: self.photos[indexPath.row] as NSString)
+                    DispatchQueue.main.async {
+                        cell.photoImage.image = self.img
+                         SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+                        
+                    }
+                    
                 }
             }
-            DispatchQueue.main.async {
-                
-                cell.photoImage.image = self.img
-                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                
-            }
         }
+        
         return cell
     }
     
@@ -316,8 +300,8 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         vc.city = city
         vc.photo = photos[indexPath.item]
         
-      present(vc, animated: true)
-    
+        present(vc, animated: true)
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -359,8 +343,8 @@ extension  SearchAndCollectionViewController{
     class func displaySpinner(onView : UIView) -> UIView {
         
         let spinnerView = UIView.init(frame: onView.bounds)
-        spinnerView.backgroundColor = UIColor.darkGray
-        let ai = UIActivityIndicatorView.init(activityIndicatorStyle: .whiteLarge)
+        spinnerView.backgroundColor = UIColor.clear
+        let ai  = UIActivityIndicatorView.init(activityIndicatorStyle: .whiteLarge)
         ai.startAnimating()
         ai.center = spinnerView.center
         DispatchQueue.main.async {

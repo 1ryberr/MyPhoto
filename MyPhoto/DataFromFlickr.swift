@@ -45,4 +45,4 @@ struct Main: Codable {
         case tempMax = "temp_max"
     }
 }
-    
+

@@ -18,32 +18,25 @@ class PhotoViewController: UIViewController {
     var latitude: Double!
     var managedObjectContext: NSManagedObjectContext!
     
-    
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var saveBtn: UIButton!
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         displayPhoto(pic: photo)
-          managedObjectContext = CoreDataStack().persistentContainer.viewContext
-        print("\(city) + \(longitude) + \(latitude)")
-        
-        
+        managedObjectContext = CoreDataStack().persistentContainer.viewContext
     }
     
     func displayPhoto(pic: String) {
         let imageURL = URL(string: photo)
         
-        if let imageData = try? Data(contentsOf: imageURL!){
+        if let imageData: Data = try? Data(contentsOf: imageURL!){
             self.img = UIImage(data: imageData)!
         }
         imageView.image = img
     }
     
-    @IBAction func saveBTN(_ sender: Any) {
-        
+    func savaData() {
         let myFav: Favorites = Favorites(context: managedObjectContext)
         myFav.latitude = latitude
         myFav.longitude = longitude
@@ -55,8 +48,8 @@ class PhotoViewController: UIViewController {
         save()
         
         dismiss(animated: true, completion: {})
-        
     }
+    
     func save() {
         
         do{
@@ -66,6 +59,17 @@ class PhotoViewController: UIViewController {
         }catch{
             print("caught an error\(error)")
         }
+    }
+    
+    
+    @IBAction func saveBTN(_ sender: Any) {
+        savaData()
+        
+    }
+    
+    @IBAction func cancelBTN(_ sender: Any) {
+        dismiss(animated: true, completion: {})
+        
     }
     
     

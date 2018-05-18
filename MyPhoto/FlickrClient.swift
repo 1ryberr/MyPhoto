@@ -21,15 +21,7 @@ class FlickrClient: NSObject{
         let url = URL(string: url)!
         let request = URLRequest(url: url)
         
-        let config = URLSessionConfiguration.default
-        config.waitsForConnectivity = true
-        config.allowsCellularAccess = true
-        
-        
-        let defaultSession = URLSession(configuration: config)
-        
-        
-        let task = defaultSession.dataTask(with: request) { (data, response, error) in
+        let task =  URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             func sendError(_ error: String) {
                 print(error)
@@ -115,10 +107,7 @@ class FlickrClient: NSObject{
                 sendError("No data was returned by the request!")
                 return
             }
-            
-            let dataAsString = String(data: data, encoding: .utf8)
-            print(dataAsString!)
-            
+    
             let decoder = JSONDecoder()
             let weather: OpenWeatherData
             do{
