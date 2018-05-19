@@ -10,10 +10,17 @@ import UIKit
 
 class FavCityTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var tempLabel: UILabel!
     @IBOutlet weak var uiImageView: UIImageView!
     @IBOutlet weak var labelView: UILabel!
     
-
+    @IBOutlet weak var humidityLabel: UILabel!
+    
+    @IBOutlet weak var highsLabels: UILabel!
+    
+    @IBOutlet weak var lowsLabel: UILabel!
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -8,17 +8,20 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 
 class SavedCitiesViewController: UIViewController {
     
     var managedObjectContext: NSManagedObjectContext!
     var favCity = [Favorites]()
+    var weather = [Double]()
+    
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       // tableView.isEditing = true
+        // tableView.isEditing = true
         loadData()
         
     }
@@ -44,6 +47,22 @@ class SavedCitiesViewController: UIViewController {
             print("caught an error\(error)")
         }
     }
+    
+    func getWeatherData(coordinates: CLLocationCoordinate2D){
+        
+        let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(coordinates.latitude)&lon=\(coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
+    
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
+            
+            guard (error == nil) else {
+                print("\(error!)")
+                return
+            }
+            
+            self.weather = weatherData!
+        })
+        
+    }
 }
 extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -68,9 +87,9 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.delete {
-         favCity.remove(at: indexPath.row)
-         tableView.deleteRows(at: [indexPath], with: .left)
-          managedObjectContext.delete(favCity[indexPath.row])
+            favCity.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            managedObjectContext.delete(favCity[indexPath.row])
             save()
         }
     }
@@ -78,6 +97,23 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let cell = cell as? FavCityTableViewCell else {return}
         cell.animate()
+    }
+    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        let coordinates = CLLocationCoordinate2D(latitude: favCity[indexPath.row].latitude, longitude: favCity[indexPath.row].longitude)
+        
+     getWeatherData(coordinates: coordinates)
+       guard let cell = tableView.cellForRow(at: indexPath) as? FavCityTableViewCell else {return}
+        var spinnerView: UIView!
+          spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            cell.tempLabel.text = "\(Int(round((self.weather[0]))))"
+            cell.humidityLabel.text = "\(Int(round((self.weather[1]))))"
+            cell.highsLabels.text = "\(Int(round((self.weather[2]))))"
+            cell.lowsLabel.text = "\(Int(round((self.weather[3]))))"
+        SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+            
+    }
     }
     
     
