@@ -27,7 +27,6 @@ struct Photo: Codable {
     
 }
 
-
 struct OpenWeatherData: Codable{
     var main: Main
 }

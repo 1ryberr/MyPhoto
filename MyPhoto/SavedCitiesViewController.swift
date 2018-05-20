@@ -75,6 +75,22 @@ class SavedCitiesViewController: UIViewController {
         })
         
     }
+    func addBounceAnimationToView(view: UIView){
+        
+        let bounceAnimation = CAKeyframeAnimation(keyPath: "transform.scale") as CAKeyframeAnimation
+        bounceAnimation.values = [ 2, 1, 2, 1]
+        
+        let timingFunctions = NSMutableArray(capacity: bounceAnimation.values!.count)
+        
+        for _ in  0...bounceAnimation.values!.count {
+            timingFunctions.add(CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut))
+        }
+        bounceAnimation.timingFunctions = timingFunctions as NSArray as? [CAMediaTimingFunction]
+        bounceAnimation.isRemovedOnCompletion = true
+        
+        view.layer.add(bounceAnimation, forKey: "bounce")
+    }
+    
 }
 
 extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -119,9 +135,9 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
         guard let cell = tableView.cellForRow(at: indexPath) as? FavCityTableViewCell else {return}
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
-        
+       
         DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-            
+            self.addBounceAnimationToView(view: cell)
             cell.tempLabel.text = "\(Int(round((self.weather[0]))))"
             cell.humidityLabel.text = "\(Int(round((self.weather[1]))))"
             cell.highsLabels.text = "\(Int(round((self.weather[2]))))"

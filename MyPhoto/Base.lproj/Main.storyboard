@@ -43,22 +43,19 @@
                                         </connections>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Humidity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="385-8v-HXf">
-                                        <rect key="frame" x="63" y="181" width="126" height="21"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="126" id="XZh-Jh-mEs"/>
-                                        </constraints>
+                                        <rect key="frame" x="67.5" y="181" width="68.5" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Highs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlh-KY-9HU">
-                                        <rect key="frame" x="63" y="210" width="45" height="21"/>
+                                        <rect key="frame" x="67.5" y="210" width="45" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lows" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xao-ED-XdF">
-                                        <rect key="frame" x="63" y="239" width="40" height="21"/>
+                                        <rect key="frame" x="67.5" y="239" width="40" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -90,23 +87,20 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Temperature" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ZY-LA-K3d">
-                                        <rect key="frame" x="63" y="152" width="102" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Temperature" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ZY-LA-K3d">
+                                        <rect key="frame" x="67.5" y="152" width="97.5" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="exl-Es-rEF">
-                                        <rect key="frame" x="107" y="112" width="163" height="36"/>
+                                        <rect key="frame" x="107" y="112" width="71" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="seF-SX-k9k">
-                                        <rect key="frame" x="278" y="115.5" width="52" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="52" id="e50-eD-YAx"/>
-                                        </constraints>
+                                        <rect key="frame" x="186" y="115.5" width="144" height="30"/>
                                         <state key="normal" title="Search"/>
                                         <connections>
                                             <action selector="mapBTN:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2In-VJ-P6j"/>
@@ -118,9 +112,9 @@
                                     <constraint firstItem="7ZY-LA-K3d" firstAttribute="leading" secondItem="385-8v-HXf" secondAttribute="leading" id="48l-XX-ngK"/>
                                     <constraint firstItem="rlh-KY-9HU" firstAttribute="leading" secondItem="Xao-ED-XdF" secondAttribute="leading" id="5Pk-2p-U3H"/>
                                     <constraint firstItem="THa-pA-YNA" firstAttribute="leading" secondItem="OsE-X4-Osy" secondAttribute="leading" id="5uG-S7-fFf"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rlh-KY-9HU" secondAttribute="trailing" constant="20" symbolic="YES" id="6sj-Ap-2hN"/>
                                     <constraint firstItem="Xao-ED-XdF" firstAttribute="top" secondItem="rlh-KY-9HU" secondAttribute="bottom" constant="8" symbolic="YES" id="86S-Cw-DNS"/>
                                     <constraint firstItem="THa-pA-YNA" firstAttribute="top" secondItem="OsE-X4-Osy" secondAttribute="bottom" constant="8" symbolic="YES" id="8eE-MP-Z0L"/>
-                                    <constraint firstItem="Ann-JY-xuB" firstAttribute="leading" secondItem="DEU-yG-pbu" secondAttribute="trailing" constant="8" id="9c8-Hr-hYJ"/>
                                     <constraint firstAttribute="trailing" secondItem="Ann-JY-xuB" secondAttribute="trailing" constant="45" id="CS7-Wc-9XG"/>
                                     <constraint firstItem="Ann-JY-xuB" firstAttribute="top" secondItem="T1r-2l-CJ7" secondAttribute="top" constant="70" id="D3e-Hx-X2b"/>
                                     <constraint firstItem="OsE-X4-Osy" firstAttribute="top" secondItem="iQu-qo-wzU" secondAttribute="bottom" constant="8" symbolic="YES" id="GT1-70-Feh"/>
@@ -130,6 +124,8 @@
                                     <constraint firstItem="THa-pA-YNA" firstAttribute="trailing" secondItem="OsE-X4-Osy" secondAttribute="trailing" id="M0e-dO-RMV"/>
                                     <constraint firstItem="385-8v-HXf" firstAttribute="top" secondItem="7ZY-LA-K3d" secondAttribute="bottom" constant="8" symbolic="YES" id="MWp-Kr-aAQ"/>
                                     <constraint firstItem="iQu-qo-wzU" firstAttribute="top" secondItem="2gJ-KA-a1F" secondAttribute="bottom" constant="9" id="QKW-Mr-asL"/>
+                                    <constraint firstItem="Ann-JY-xuB" firstAttribute="leading" secondItem="DEU-yG-pbu" secondAttribute="trailing" constant="8" id="UtR-Ap-Ack"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Xao-ED-XdF" secondAttribute="trailing" constant="20" symbolic="YES" id="V3K-A4-lvp"/>
                                     <constraint firstItem="2gJ-KA-a1F" firstAttribute="baseline" secondItem="7ZY-LA-K3d" secondAttribute="baseline" id="VSD-4H-QwZ"/>
                                     <constraint firstItem="exl-Es-rEF" firstAttribute="top" secondItem="Ann-JY-xuB" secondAttribute="bottom" constant="12" id="c3P-65-czD"/>
                                     <constraint firstItem="7ZY-LA-K3d" firstAttribute="top" secondItem="Ann-JY-xuB" secondAttribute="bottom" constant="51.666664123535156" id="cDP-MG-Naa"/>
@@ -141,6 +137,7 @@
                                     <constraint firstItem="rlh-KY-9HU" firstAttribute="top" secondItem="385-8v-HXf" secondAttribute="bottom" constant="8" symbolic="YES" id="icJ-vA-tKF"/>
                                     <constraint firstItem="2gJ-KA-a1F" firstAttribute="leading" secondItem="T1r-2l-CJ7" secondAttribute="leading" constant="176" id="l8Y-Ba-m6g"/>
                                     <constraint firstItem="seF-SX-k9k" firstAttribute="leading" secondItem="exl-Es-rEF" secondAttribute="trailing" constant="8" symbolic="YES" id="nUA-lM-rGK"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="385-8v-HXf" secondAttribute="trailing" constant="20" symbolic="YES" id="sss-gu-Mci"/>
                                     <constraint firstItem="seF-SX-k9k" firstAttribute="centerY" secondItem="exl-Es-rEF" secondAttribute="centerY" id="t5i-5b-9ED"/>
                                     <constraint firstItem="DEU-yG-pbu" firstAttribute="leading" secondItem="T1r-2l-CJ7" secondAttribute="leading" constant="45" id="wrZ-ip-Fyb"/>
                                 </constraints>
@@ -245,7 +242,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1076" y="134.48275862068968"/>
+            <point key="canvasLocation" x="984.79999999999995" y="133.5832083958021"/>
         </scene>
         <!--Saved Cities View Controller-->
         <scene sceneID="ajA-AU-OeG">
@@ -260,7 +257,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="136" id="u4W-2Q-3wM" customClass="FavCityTableViewCell" customModule="MyPhoto" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="136" id="u4W-2Q-3wM" customClass="FavCityTableViewCell" customModule="MyPhoto" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="136"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="u4W-2Q-3wM" id="FM5-gc-yLl" customClass="FavCityTableViewCell" customModule="MyPhoto" customModuleProvider="target">
@@ -368,7 +365,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cwt-z8-70B" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="138.40000000000001" y="840.62968515742136"/>
+            <point key="canvasLocation" x="820" y="861"/>
         </scene>
         <!--Photo View Controller-->
         <scene sceneID="iD6-O3-oqe">
@@ -417,7 +414,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sXb-et-7H7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1903.2" y="148.87556221889056"/>
+            <point key="canvasLocation" x="1670" y="134"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5qS-tX-O7Y">

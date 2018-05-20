@@ -14,7 +14,6 @@
 		5842342A20ADBDF700475DC8 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5842342920ADBDF700475DC8 /* CoreDataStack.swift */; };
 		584AD71F20AB333300B0D5A8 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584AD71E20AB333300B0D5A8 /* PhotoViewController.swift */; };
 		586490BF20935F73006B151A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586490BE20935F73006B151A /* AppDelegate.swift */; };
-		586490C120935F73006B151A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586490C020935F73006B151A /* ViewController.swift */; };
 		586490C420935F73006B151A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 586490C220935F73006B151A /* Main.storyboard */; };
 		586490C720935F73006B151A /* MyPhoto.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 586490C520935F73006B151A /* MyPhoto.xcdatamodeld */; };
 		586490C920935F7D006B151A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 586490C820935F7D006B151A /* Assets.xcassets */; };
@@ -51,7 +50,6 @@
 		584AD71E20AB333300B0D5A8 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		586490BB20935F73006B151A /* MyPhoto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPhoto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		586490BE20935F73006B151A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		586490C020935F73006B151A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		586490C320935F73006B151A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		586490C620935F73006B151A /* MyPhoto.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyPhoto.xcdatamodel; sourceTree = "<group>"; };
 		586490C820935F7D006B151A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -120,7 +118,6 @@
 				586490BE20935F73006B151A /* AppDelegate.swift */,
 				5829494F20989880003A1AF6 /* DataFromFlickr.swift */,
 				5829494B209897C3003A1AF6 /* FlickrClient.swift */,
-				586490C020935F73006B151A /* ViewController.swift */,
 				5829495120989DC7003A1AF6 /* SearchAndCollectionViewController.swift */,
 				584AD71E20AB333300B0D5A8 /* PhotoViewController.swift */,
 				586FF2B120ADE3FA00CCEAC3 /* SavedCitiesViewController.swift */,
@@ -284,7 +281,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				586490C720935F73006B151A /* MyPhoto.xcdatamodeld in Sources */,
-				586490C120935F73006B151A /* ViewController.swift in Sources */,
 				5829495020989880003A1AF6 /* DataFromFlickr.swift in Sources */,
 				586FF2B220ADE3FA00CCEAC3 /* SavedCitiesViewController.swift in Sources */,
 				5842342A20ADBDF700475DC8 /* CoreDataStack.swift in Sources */,

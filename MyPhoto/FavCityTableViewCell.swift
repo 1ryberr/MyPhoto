@@ -35,7 +35,6 @@ class FavCityTableViewCell: UITableViewCell {
         lowsLabel.text = "0"
     }
     
-    
     func animate(){
         UIView.beginAnimations("", context: nil)
         UIView.setAnimationDuration(0.7)
@@ -50,8 +49,6 @@ class FavCityTableViewCell: UITableViewCell {
         layer.transform = CATransform3DMakeRotation((90.0 * .pi) / 180,0,0.3,0.2)
         layer.anchorPoint = CGPoint(x: 0, y: 0)
     }
-    
-    
     
     
 }

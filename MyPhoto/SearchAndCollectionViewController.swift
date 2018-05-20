@@ -46,20 +46,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
     }
     
-    func downloadImage(photo : String)  {
-        let imageUrl = URL(string: photo)
-        
-        let task = URLSession.shared.dataTask(with: imageUrl! ){ (data,response, error) in
-            
-            if error == nil {
-                let loadedImage = UIImage(data: data!)
-                
-            }
-        }
-        task.resume()
-        
-    }
-    
     func labelsFormat() {
         labelFunction(label: cityLabel, text: "City", color: UIColor.black)
         labelFunction(label: tempLabel, text: "0", color: UIColor.black)
@@ -271,7 +257,11 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
 extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        photos.count == 0 ? !noImage.isHidden : noImage.isHidden
+        if photos.count == 0 {
+        noImage.isHidden = false
+        }else{
+        noImage.isHidden = true
+        }
         return photos.count
     }
     
