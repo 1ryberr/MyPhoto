@@ -16,8 +16,8 @@ class FlickrClient: NSObject{
     private override init() {}
     func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [String]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
-        var myImages = [String]()
         
+        var myImages = [String]()
         let url = URL(string: url)!
         let request = URLRequest(url: url)
         
@@ -49,11 +49,10 @@ class FlickrClient: NSObject{
                 code = try JSONDecoder().decode(FlickrPagedImageResult.self, from: data)
                 
                 for photo in (code.photos?.photo)!{
+                   
                     myImages.append(photo.url_m)
                 }
-                
-                
-            } catch {
+            }catch {
                 sendError("Could not parse the data as JSON: '\(data)'")
                 return
             }
@@ -107,18 +106,19 @@ class FlickrClient: NSObject{
                 sendError("No data was returned by the request!")
                 return
             }
-    
+            
             let decoder = JSONDecoder()
             let weather: OpenWeatherData
+            
             do{
                 weather = try decoder.decode(OpenWeatherData.self, from: data)
                 weatherData.append(weather.main.temp)
                 weatherData.append(weather.main.humidity)
                 weatherData.append(weather.main.tempMax)
                 weatherData.append(weather.main.tempMin)
-             
+                
             }catch{
-                 sendError("Could not parse the data as JSON: '\(data)'")
+                sendError("Could not parse the data as JSON: '\(data)'")
             }
             
             completionHandlerForPOST(weatherData, nil)
@@ -128,6 +128,28 @@ class FlickrClient: NSObject{
         
         
         return task
+    }
+    
+    func downloadImage(url: URL, completion: @escaping (_ image: UIImage?, _ error: Error? ) -> Void) {
+         let imageCache = NSCache<NSString, UIImage>()
+        if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
+            completion(cachedImage, nil)
+        } else {
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    completion(nil, error)
+                    
+                } else if let data = data, let image = UIImage(data: data) {
+                    imageCache.setObject(image, forKey: url.absoluteString as NSString)
+                    completion(image, nil)
+                } else {
+                    completion(nil, error)
+                }
+            }
+            
+        task.resume()
+        }
+       
     }
     
     

@@ -23,6 +23,7 @@ class PhotoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         displayPhoto(pic: photo)
         managedObjectContext = CoreDataStack().persistentContainer.viewContext
     }

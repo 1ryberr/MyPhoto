@@ -33,20 +33,38 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     var weather = [Double]()
     let FLICKER_API_KEY = "5502594069909ec1c701e8582fdfa052"
     let WEATHER_MAP_KEY =  "645ed60a8e4bfce83c50f48532f8a957"
-    var img : UIImage!
+    var img: UIImage!
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
-    var city : String!
+    var city: String!
+    
+    
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         labelsFormat()
         getCurrentLocation()
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
         map.addGestureRecognizer(longPress)
+        
+    }
+    
+    func downloadImage(photo : String)  {
+        let imageUrl = URL(string: photo)
+        
+        let task = URLSession.shared.dataTask(with: imageUrl! ){ (data,response, error) in
+            
+            if error == nil {
+                let loadedImage = UIImage(data: data!)
+                
+            }
+        }
+        task.resume()
         
     }
     
@@ -193,7 +211,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 return
             }
             self.photos = myImages!
-            
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
@@ -263,24 +280,21 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PhotoCollectionViewCell
-      
+        
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
         
-        if let imageFromCache: UIImage = self.imageCache.object(forKey: self.photos[indexPath.row] as NSString ) {
-                cell.photoImage.image = imageFromCache
-                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-        }else{
-            DispatchQueue.global().async {
-                let imageURL = URL(string: self.photos[indexPath.item])
-                if let imageData: Data = try? Data(contentsOf: imageURL!){
-                    self.img = UIImage(data: imageData)!
-                    self.imageCache.setObject(self.img, forKey: self.photos[indexPath.row] as NSString)
-                    DispatchQueue.main.async {
-                        cell.photoImage.image = self.img
-                         SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                        
-                    }
+        let imageUrl = URL(string: self.photos[indexPath.item])
+        
+        FlickrClient.sharedInstance.downloadImage(url: imageUrl!){(image, error)in
+            let loadedImage: UIImage!
+            if error == nil {
+                loadedImage = image
+                self.imageCache.setObject(loadedImage, forKey: self.photos[indexPath.row] as NSString)
+                
+                DispatchQueue.main.async {
+                    cell.photoImage.image = loadedImage
+                    SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     
                 }
             }

@@ -16,15 +16,14 @@ class SavedCitiesViewController: UIViewController {
     var favCity = [Favorites]()
     var weather = [Double]()
     
-    
     @IBOutlet weak var tableView: UITableView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // tableView.isEditing = true
         loadData()
-        
     }
+    
     func save() {
         
         do{
@@ -37,7 +36,6 @@ class SavedCitiesViewController: UIViewController {
     }
     
     func loadData() {
-        
         managedObjectContext = CoreDataStack().persistentContainer.viewContext
         let request: NSFetchRequest<Favorites> = Favorites.fetchRequest()
         request.returnsObjectsAsFaults = false
@@ -48,10 +46,24 @@ class SavedCitiesViewController: UIViewController {
         }
     }
     
+    func deleteData(indexPath: IndexPath) {
+        
+        managedObjectContext = CoreDataStack().persistentContainer.viewContext
+        let request: NSFetchRequest<Favorites> = Favorites.fetchRequest()
+        request.returnsObjectsAsFaults = false
+        do{
+            favCity = try managedObjectContext.fetch(request)
+            managedObjectContext.delete(favCity[indexPath.row])
+        }catch{
+            print("caught an error\(error)")
+        }
+        save()
+    }
+    
     func getWeatherData(coordinates: CLLocationCoordinate2D){
         
         let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(coordinates.latitude)&lon=\(coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
-    
+        
         FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
             
             guard (error == nil) else {
@@ -64,6 +76,7 @@ class SavedCitiesViewController: UIViewController {
         
     }
 }
+
 extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return favCity.count
@@ -87,10 +100,10 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.delete {
+            
+            deleteData(indexPath: indexPath )
             favCity.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .left)
-            managedObjectContext.delete(favCity[indexPath.row])
-            save()
+            tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
     
@@ -98,23 +111,23 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
         guard let cell = cell as? FavCityTableViewCell else {return}
         cell.animate()
     }
+    
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         let coordinates = CLLocationCoordinate2D(latitude: favCity[indexPath.row].latitude, longitude: favCity[indexPath.row].longitude)
         
-     getWeatherData(coordinates: coordinates)
-       guard let cell = tableView.cellForRow(at: indexPath) as? FavCityTableViewCell else {return}
+        getWeatherData(coordinates: coordinates)
+        guard let cell = tableView.cellForRow(at: indexPath) as? FavCityTableViewCell else {return}
         var spinnerView: UIView!
-          spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
+        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+            
             cell.tempLabel.text = "\(Int(round((self.weather[0]))))"
             cell.humidityLabel.text = "\(Int(round((self.weather[1]))))"
             cell.highsLabels.text = "\(Int(round((self.weather[2]))))"
             cell.lowsLabel.text = "\(Int(round((self.weather[3]))))"
-        SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+            SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             
+        }
     }
-    }
-    
-    
 }
