@@ -25,9 +25,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var flipViewBTN: UIBarButtonItem!
     
-    
-    
-    let imageCache = NSCache<NSString, UIImage>()
     var coordinates = CLLocationCoordinate2D()
     var photos = [String]()
     var weather = [Double]()
@@ -39,14 +36,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     var city: String!
     
     
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
+    
         labelsFormat()
         getCurrentLocation()
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
@@ -249,7 +241,13 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     @IBAction func SearchActBTN(_ sender: Any) {
         
-        map.isHidden ? flip():flipMap()
+        if map.isHidden{
+          SearchBTN.title = "Search"
+        flip()
+        }else{
+       SearchBTN.title = "Map"
+         flipMap()
+        }
     }
     
     @IBAction func mapBTN(_ sender: Any) {
@@ -259,7 +257,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         searchTextField.text = ""
         
     }
-    
     
     @IBAction func savedCities(_ sender: Any) {
         
@@ -290,8 +287,6 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
             let loadedImage: UIImage!
             if error == nil {
                 loadedImage = image
-                self.imageCache.setObject(loadedImage, forKey: self.photos[indexPath.row] as NSString)
-                
                 DispatchQueue.main.async {
                     cell.photoImage.image = loadedImage
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)

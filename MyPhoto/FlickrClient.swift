@@ -132,8 +132,8 @@ class FlickrClient: NSObject{
     
     func downloadImage(url: URL, completion: @escaping (_ image: UIImage?, _ error: Error? ) -> Void) {
          let imageCache = NSCache<NSString, UIImage>()
-        if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
-            completion(cachedImage, nil)
+        if let image = imageCache.object(forKey: url.absoluteString as NSString) {
+            completion(image, nil)
         } else {
             let task = URLSession.shared.dataTask(with: url) { data, response, error in
                 if let error = error {
