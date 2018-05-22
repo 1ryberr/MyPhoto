@@ -60,21 +60,6 @@ class SavedCitiesViewController: UIViewController {
         save()
     }
     
-    func getWeatherData(coordinates: CLLocationCoordinate2D){
-        
-        let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(coordinates.latitude)&lon=\(coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
-        
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
-            
-            guard (error == nil) else {
-                print("\(error!)")
-                return
-            }
-            
-            self.weather = weatherData!
-        })
-        
-    }
     func addBounceAnimationToView(view: UIView){
         
         let bounceAnimation = CAKeyframeAnimation(keyPath: "transform.scale") as CAKeyframeAnimation
@@ -130,20 +115,40 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         let coordinates = CLLocationCoordinate2D(latitude: favCity[indexPath.row].latitude, longitude: favCity[indexPath.row].longitude)
-        
-        getWeatherData(coordinates: coordinates)
         guard let cell = tableView.cellForRow(at: indexPath) as? FavCityTableViewCell else {return}
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
-       
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-            self.addBounceAnimationToView(view: cell)
-            cell.tempLabel.text = "\(Int(round((self.weather[0]))))"
-            cell.humidityLabel.text = "\(Int(round((self.weather[1]))))"
-            cell.highsLabels.text = "\(Int(round((self.weather[2]))))"
-            cell.lowsLabel.text = "\(Int(round((self.weather[3]))))"
-            SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+        let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(coordinates.latitude)&lon=\(coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
+        
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: { (weather, error) in
             
-        }
+            guard (error == nil) else {
+                print("\(error!)")
+                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+                
+                let alert = UIAlertController(title: "Error", message: "Weather retrieval failed", preferredStyle: UIAlertControllerStyle.alert)
+                
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in
+                    self.dismiss(animated: true, completion: {})
+                })
+                
+                alert.addAction(actionOK)
+                
+                self.present(alert, animated: true, completion: nil)
+                
+                return
+            }
+            
+            self.weather = weather!
+            
+            DispatchQueue.main.async {
+                self.addBounceAnimationToView(view: cell)
+                cell.tempLabel.text = "\(Int(round((self.weather[0]))))"
+                cell.humidityLabel.text = "\(Int(round((self.weather[1]))))"
+                cell.highsLabels.text = "\(Int(round((self.weather[2]))))"
+                cell.lowsLabel.text = "\(Int(round((self.weather[3]))))"
+                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+            }
+        });
     }
 }

@@ -75,15 +75,9 @@ class FlickrClient: NSObject{
         
         var request = URLRequest(url: url!)
         
-        let config = URLSessionConfiguration.default
-        config.waitsForConnectivity = true
-        config.allowsCellularAccess = true
         
         
-        let defaultSession = URLSession(configuration: config)
-        
-        
-        let task = defaultSession.dataTask(with: request) { (data, response, error) in
+        let task =  URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             
             func sendError(_ error: String) {
@@ -151,7 +145,5 @@ class FlickrClient: NSObject{
         }
        
     }
-    
-    
     
 }
