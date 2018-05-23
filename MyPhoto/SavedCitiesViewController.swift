@@ -76,6 +76,21 @@ class SavedCitiesViewController: UIViewController {
         view.layer.add(bounceAnimation, forKey: "bounce")
     }
     
+    func WeatherURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
+        
+        var components = URLComponents()
+        components.scheme = Constants.OpenWeather.APIScheme
+        components.host = Constants.OpenWeather.APIHost
+        components.path = Constants.OpenWeather.APIPath
+        components.queryItems = [URLQueryItem]()
+        
+        for (key, value) in parameters {
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
+            components.queryItems!.append(queryItem)
+        }
+        
+        return components.url!
+    }
 }
 
 extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -118,9 +133,15 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
         guard let cell = tableView.cellForRow(at: indexPath) as? FavCityTableViewCell else {return}
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
-        let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(coordinates.latitude)&lon=\(coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
+      
+        let methodParameters = [
+            Constants.OpenWeatherKeys.Latitude:  "\(coordinates.latitude)",
+            Constants.OpenWeatherKeys.Longitude: "\(coordinates.longitude)",
+            Constants.OpenWeatherKeys.TheType: Constants.OpenWeatherValues.TheType,
+            Constants.OpenWeatherKeys.Units: Constants.OpenWeatherValues.Units,
+            Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
         
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: { (weather, error) in
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { (weather, error) in
             
             guard (error == nil) else {
                 print("\(error!)")

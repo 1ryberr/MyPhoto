@@ -182,8 +182,17 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func getFlickData(coordinates: CLLocationCoordinate2D) {
         
-        let FLICKER_LINK = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(self.FLICKER_API_KEY)&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&extras=url_m&page=\(1)&format=json&nojsoncallback=1"
-        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url:FLICKER_LINK,completionHandlerForPOST: {myImages,error in
+        let methodParameters = [
+            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod,
+            Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey,
+            Constants.FlickrParameterKeys.Latitude:  "\(self.coordinates.latitude)",
+            Constants.FlickrParameterKeys.Longitude: "\(self.coordinates.longitude)",
+            Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
+            Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
+            Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
+        ]
+       
+        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages,error in
             guard (error == nil) else {
                 print("\(error!)")
                 return
@@ -199,11 +208,19 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func getWeatherData(coordinates: CLLocationCoordinate2D){
         
-        let WEATHER_LINK = "https://api.openweathermap.org/data/2.5/weather?&lat=\(self.coordinates.latitude)&lon=\(self.coordinates.longitude)&type=accurate&units=imperial&appid=645ed60a8e4bfce83c50f48532f8a957"
+
+        let methodParameters = [
+            Constants.OpenWeatherKeys.Latitude:  "\(self.coordinates.latitude)",
+            Constants.OpenWeatherKeys.Longitude: "\(self.coordinates.longitude)",
+            Constants.OpenWeatherKeys.TheType: Constants.OpenWeatherValues.TheType,
+            Constants.OpenWeatherKeys.Units: Constants.OpenWeatherValues.Units,
+            Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
+        
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
         
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: WEATHER_LINK, completionHandlerForPOST: {weatherData,error in
+    
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
             
             guard (error == nil) else {
                 print("\(error!)")
@@ -306,6 +323,42 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         return CGSize(width:(UIScreen.main.bounds.width - 20)/3, height:(UIScreen.main.bounds.width - 20)/3)
+    }
+    
+    
+    func WeatherURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
+        
+        var components = URLComponents()
+        components.scheme = Constants.OpenWeather.APIScheme
+        components.host = Constants.OpenWeather.APIHost
+        components.path = Constants.OpenWeather.APIPath
+        components.queryItems = [URLQueryItem]()
+        
+        for (key, value) in parameters {
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
+            components.queryItems!.append(queryItem)
+        }
+        
+        return components.url!
+    }
+    
+    
+    
+    
+    func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
+        
+        var components = URLComponents()
+        components.scheme = Constants.Flickr.APIScheme
+        components.host = Constants.Flickr.APIHost
+        components.path = Constants.Flickr.APIPath
+        components.queryItems = [URLQueryItem]()
+        
+        for (key, value) in parameters {
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
+            components.queryItems!.append(queryItem)
+        }
+        
+        return components.url!
     }
     
 }
