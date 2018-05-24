@@ -70,13 +70,8 @@ class FlickrClient: NSObject{
     func displayWeatherBySearch(url: String, completionHandlerForPOST: @escaping (_ weather: [Double]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         var weatherData = [Double]()
-        
         let url = URL(string: url)
-        
         var request = URLRequest(url: url!)
-        
-        
-        
         let task =  URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             
@@ -147,3 +142,23 @@ class FlickrClient: NSObject{
     }
     
 }
+
+struct AppUtility {
+    
+    static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
+        
+        if let delegate = UIApplication.shared.delegate as? AppDelegate {
+            delegate.orientationLock = orientation
+        }
+    }
+    
+    static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
+        
+        self.lockOrientation(orientation)
+        
+        UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
+    }
+    
+}
+
+

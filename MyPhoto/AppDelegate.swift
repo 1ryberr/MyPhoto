@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     var stack = CoreDataStack()
+     var orientationLock = UIInterfaceOrientationMask.all
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         return true
@@ -24,5 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         stack.saveContext()
     }
     
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return self.orientationLock
+        
+    }
+    
+
 }
 

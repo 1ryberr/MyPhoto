@@ -33,10 +33,6 @@ struct Constants {
         static let ResponseFormat = "json"
         static let DisableJSONCallback = "1"
         static let MediumURL = "url_m"
-        static let Latitude = " "
-        static let Longitude = " "
-        static let page = ""
-        
     }
     struct OpenWeather {
         static let APIScheme = "https"
@@ -52,7 +48,6 @@ struct Constants {
         
     }
     struct OpenWeatherValues {
-       
         static let TheType = "accurate"
         static let Units = "imperial"
         static let AppID = "645ed60a8e4bfce83c50f48532f8a957"
@@ -60,3 +55,11 @@ struct Constants {
     }
     
 }
+
+
+
+
+
+
+
+

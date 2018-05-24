@@ -91,6 +91,17 @@ class SavedCitiesViewController: UIViewController {
         
         return components.url!
     }
+    
+    func labelFunction(label: UILabel, text: String, color: UIColor) {
+        
+        let attrs = [NSAttributedStringKey.foregroundColor: color,
+                     NSAttributedStringKey.font: UIFont(name: "Georgia-Bold", size: 24)!,
+                     NSAttributedStringKey.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
+        
+        let string = NSAttributedString(string: text, attributes: attrs)
+        label.attributedText = string
+        
+    }
 }
 
 extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -101,8 +112,7 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! FavCityTableViewCell
         cell.uiImageView.image = UIImage(data: favCity[indexPath.row].photo!)
-        cell.labelView.text = favCity[indexPath.row].city
-        
+        labelFunction(label:cell.labelView, text: favCity[indexPath.row].city!, color: UIColor.red)
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -145,8 +155,8 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             
             guard (error == nil) else {
                 print("\(error!)")
-                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                 
+                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                 let alert = UIAlertController(title: "Error", message: "Weather retrieval failed", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in

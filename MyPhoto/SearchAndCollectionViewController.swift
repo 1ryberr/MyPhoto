@@ -28,8 +28,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     var coordinates = CLLocationCoordinate2D()
     var photos = [String]()
     var weather = [Double]()
-    let FLICKER_API_KEY = "5502594069909ec1c701e8582fdfa052"
-    let WEATHER_MAP_KEY =  "645ed60a8e4bfce83c50f48532f8a957"
     var img: UIImage!
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
@@ -38,20 +36,11 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        labelsFormat()
+        AppUtility.lockOrientation(.portrait)
         getCurrentLocation()
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
         map.addGestureRecognizer(longPress)
         
-    }
-    
-    func labelsFormat() {
-        labelFunction(label: cityLabel, text: "City", color: UIColor.black)
-        labelFunction(label: tempLabel, text: "0", color: UIColor.black)
-        labelFunction(label: humidityLabel, text: "0", color: UIColor.black)
-        labelFunction(label: highsLabels, text: "0", color: UIColor.black)
-        labelFunction(label: lowsLabel, text: "0", color: UIColor.black)
     }
     
     func getCity(_ lastLocation: CLLocation) {
@@ -174,7 +163,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 self.getFlickData(coordinates: self.coordinates)
                 self.getWeatherData(coordinates: self.coordinates)
                 self.city = placemarks![0].name
-                self.cityLabel.text = self.city
+                self.labelFunction(label: self.cityLabel, text: self.city, color: UIColor.black)
+                
             }
             
         }
@@ -189,9 +179,10 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.Longitude: "\(self.coordinates.longitude)",
             Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
             Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
+            Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(3)) + 1)",
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
-       
+        
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages,error in
             guard (error == nil) else {
                 print("\(error!)")
@@ -208,10 +199,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func getWeatherData(coordinates: CLLocationCoordinate2D){
         
-
         let methodParameters = [
-            Constants.OpenWeatherKeys.Latitude:  "\(self.coordinates.latitude)",
-            Constants.OpenWeatherKeys.Longitude: "\(self.coordinates.longitude)",
+            Constants.OpenWeatherKeys.Latitude:  "\(coordinates.latitude)",
+            Constants.OpenWeatherKeys.Longitude: "\(coordinates.longitude)",
             Constants.OpenWeatherKeys.TheType: Constants.OpenWeatherValues.TheType,
             Constants.OpenWeatherKeys.Units: Constants.OpenWeatherValues.Units,
             Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
@@ -219,7 +209,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
         
-    
+        
         FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
             
             guard (error == nil) else {
@@ -230,6 +220,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             self.weather = weatherData!
             
             DispatchQueue.main.async {
+                
                 self.tempLabel.text = "\(Int(round((weatherData?[0])!)))"
                 self.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
                 self.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
@@ -245,11 +236,11 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBAction func SearchActBTN(_ sender: Any) {
         
         if map.isHidden{
-          SearchBTN.title = "Search"
-        flip()
+            SearchBTN.title = "Search"
+            flip()
         }else{
-       SearchBTN.title = "Map"
-         flipMap()
+            SearchBTN.title = "Map"
+            flipMap()
         }
     }
     
@@ -275,9 +266,9 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if photos.count == 0 {
-        noImage.isHidden = false
+            noImage.isHidden = false
         }else{
-        noImage.isHidden = true
+            noImage.isHidden = true
         }
         return photos.count
     }
@@ -341,9 +332,6 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         
         return components.url!
     }
-    
-    
-    
     
     func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
         

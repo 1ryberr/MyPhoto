@@ -117,6 +117,7 @@
 			children = (
 				583C3C8B20B595FA007860DC /* Constants.swift */,
 				586FF2B920B39A8B00CCEAC3 /* CoreDataStack.swift */,
+				586FF2B320AE101200CCEAC3 /* FavCityTableViewCell.swift */,
 				586FF2B520B399C800CCEAC3 /* PhotoCollectionViewCell.swift */,
 				586490BE20935F73006B151A /* AppDelegate.swift */,
 				5829494F20989880003A1AF6 /* DataFromFlickr.swift */,
@@ -124,7 +125,6 @@
 				5829495120989DC7003A1AF6 /* SearchAndCollectionViewController.swift */,
 				584AD71E20AB333300B0D5A8 /* PhotoViewController.swift */,
 				586FF2B120ADE3FA00CCEAC3 /* SavedCitiesViewController.swift */,
-				586FF2B320AE101200CCEAC3 /* FavCityTableViewCell.swift */,
 				586490C220935F73006B151A /* Main.storyboard */,
 				586490C820935F7D006B151A /* Assets.xcassets */,
 				586490CA20935F7D006B151A /* LaunchScreen.storyboard */,

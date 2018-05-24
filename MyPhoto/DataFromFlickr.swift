@@ -27,7 +27,7 @@ struct Photo: Codable {
     
 }
 
-struct OpenWeatherData: Codable{
+struct OpenWeatherData: Codable {
     var main: Main
 }
 
@@ -44,4 +44,3 @@ struct Main: Codable {
         case tempMax = "temp_max"
     }
 }
-

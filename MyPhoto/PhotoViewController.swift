@@ -19,7 +19,7 @@ class PhotoViewController: UIViewController {
     var managedObjectContext: NSManagedObjectContext!
     
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var saveBtn: UIButton!
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
