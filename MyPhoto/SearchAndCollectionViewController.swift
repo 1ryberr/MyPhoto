@@ -32,7 +32,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
     var city: String!
-    
+    var numberOfPages: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -179,15 +179,16 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.Longitude: "\(self.coordinates.longitude)",
             Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
             Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
-            Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(3)) + 1)",
+            Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)",
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
-        
-        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages,error in
+        print(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)
+        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages, pages,error in
             guard (error == nil) else {
                 print("\(error!)")
                 return
             }
+            self.numberOfPages = pages
             self.photos = myImages!
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -260,6 +261,12 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
     }
     
+    
+    
+    @IBAction func currentLocation(_ sender: Any) {
+        getCurrentLocation()
+        
+    }
 }
 
 extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {

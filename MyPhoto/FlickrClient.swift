@@ -14,7 +14,7 @@ class FlickrClient: NSObject{
     
     static let sharedInstance = FlickrClient()
     private override init() {}
-    func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [String]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+    func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [String]?,_ pages: Int, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         
         var myImages = [String]()
@@ -26,7 +26,7 @@ class FlickrClient: NSObject{
             func sendError(_ error: String) {
                 print(error)
                 let userInfo = [NSLocalizedDescriptionKey : error]
-                completionHandlerForPOST(nil, NSError(domain: "getStudentInfo", code: 1, userInfo: userInfo))
+                completionHandlerForPOST(nil, 0,NSError(domain: "getStudentInfo", code: 1, userInfo: userInfo))
             }
             
             guard (error == nil) else {
@@ -45,8 +45,11 @@ class FlickrClient: NSObject{
             }
             
             let code : FlickrPagedImageResult
+            let pages: Int
             do {
                 code = try JSONDecoder().decode(FlickrPagedImageResult.self, from: data)
+                
+                pages = (code.photos?.pages)!
                 
                 for photo in (code.photos?.photo)!{
                    
@@ -57,10 +60,10 @@ class FlickrClient: NSObject{
                 return
             }
             if !(code.photos?.photo.isEmpty)! {
-                completionHandlerForPOST(myImages, nil)
+                completionHandlerForPOST(myImages, pages,nil)
             }else{
                 let myImages: [String] = []
-                completionHandlerForPOST(myImages, nil)
+                completionHandlerForPOST(myImages,0, nil)
             }
         }
         task.resume()
