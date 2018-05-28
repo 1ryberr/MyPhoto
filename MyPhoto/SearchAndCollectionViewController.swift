@@ -198,12 +198,15 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)",
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
+        var spinnerView: UIView!
+        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
+        
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages, pages,error in
             guard error == nil else {
                 let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
-                    self.removePinCoordinates()
+                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
@@ -238,7 +241,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
-                    self.removePinCoordinates()
+                   SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
