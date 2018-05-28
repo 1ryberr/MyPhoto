@@ -215,6 +215,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             }
             self.numberOfPages = pages
             self.photos = myImages!
+            
+            SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
