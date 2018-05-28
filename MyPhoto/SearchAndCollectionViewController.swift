@@ -199,8 +199,14 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages, pages,error in
-            guard (error == nil) else {
-                print("\(error!)")
+            guard error == nil else {
+                let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
+                
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                    self.dismiss(animated: true, completion: {})
+                })
+                alert.addAction(actionOK)
+                self.present(alert, animated: true, completion: nil)
                 return
             }
             self.numberOfPages = pages
@@ -227,8 +233,14 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
         FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
             
-            guard (error == nil) else {
-                print("\(error!)")
+            guard error == nil else {
+                let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
+                
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                    self.dismiss(animated: true, completion: {})
+                })
+                alert.addAction(actionOK)
+                self.present(alert, animated: true, completion: nil)
                 return
             }
             
