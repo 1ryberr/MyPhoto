@@ -203,6 +203,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                    self.removePinCoordinates()
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
@@ -237,6 +238,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                    self.removePinCoordinates()
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
