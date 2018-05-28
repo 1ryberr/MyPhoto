@@ -15,6 +15,8 @@ class SavedCitiesViewController: UIViewController {
     var managedObjectContext: NSManagedObjectContext!
     var favCity = [Favorites]()
     var weather = [Double]()
+   
+    
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -91,7 +93,7 @@ class SavedCitiesViewController: UIViewController {
         
         return components.url!
     }
-    
+   
     func labelFunction(label: UILabel, text: String, color: UIColor) {
         
         let attrs = [NSAttributedStringKey.foregroundColor: color,
@@ -157,7 +159,7 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
                 print("\(error!)")
                 
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                let alert = UIAlertController(title: "Error", message: "Weather retrieval failed", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Weather retrieval failed check your internet connection", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in
                     self.dismiss(animated: true, completion: {})

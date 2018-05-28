@@ -33,6 +33,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     let geocoder = CLGeocoder()
     var city: String!
     var numberOfPages: Int = 0
+    let refreshControls = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +41,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         getCurrentLocation()
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
         map.addGestureRecognizer(longPress)
+        updateCurrentLocation()
         
     }
     
@@ -57,9 +59,23 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 return
             }
             
-            let cityState = placemarks![0].locality! + "," + placemarks![0].administrativeArea!
-            self.getMapByAddress(map:self.map, address:cityState)
             
+            if placemarks![0].locality != nil {
+            
+             let cityState = "\(placemarks![0].locality!)" + "," + "\(placemarks![0].administrativeArea!)"
+             self.getMapByAddress(map:self.map, address:cityState)
+                
+            }else {
+                let alert = UIAlertController(title: "Error", message: "Geolocation not vaild try another.", preferredStyle: UIAlertControllerStyle.alert)
+                
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                    self.removePinCoordinates()
+                    self.dismiss(animated: true, completion: {})
+                })
+                alert.addAction(actionOK)
+                self.present(alert, animated: true, completion: nil)            }
+      
+     
         })
     }
     
@@ -182,7 +198,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)",
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
-        print(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages, pages,error in
             guard (error == nil) else {
                 print("\(error!)")
@@ -209,7 +224,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
-        
         
         FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
             
@@ -244,6 +258,25 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             flipMap()
         }
     }
+    @objc func refresh() {
+        getCurrentLocation()
+        collectionView?.refreshControl?.endRefreshing()
+    }
+    
+    func updateCurrentLocation(){
+        
+        let attrs = [NSAttributedStringKey.foregroundColor:UIColor.white,
+                     NSAttributedStringKey.font: UIFont(name: "Georgia-Bold", size: 24)!,
+                     NSAttributedStringKey.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
+        
+        let string = NSAttributedString(string: "Updating Current Location", attributes: attrs)
+        
+        refreshControls.addTarget(self, action: #selector(self.refresh), for: UIControlEvents.valueChanged)
+        refreshControls.attributedTitle = string
+        refreshControls.tintColor = .white
+        collectionView?.refreshControl = refreshControls
+    }
+    
     
     @IBAction func mapBTN(_ sender: Any) {
         
@@ -261,12 +294,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
     }
     
-    
-    
-    @IBAction func currentLocation(_ sender: Any) {
-        getCurrentLocation()
-        
-    }
 }
 
 extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
