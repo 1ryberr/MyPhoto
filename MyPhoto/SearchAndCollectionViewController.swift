@@ -48,7 +48,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     func getCity(_ lastLocation: CLLocation) {
         geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
             guard (error == nil) else {
-                print("\(error!)")
+        
                 let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in

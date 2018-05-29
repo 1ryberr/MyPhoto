@@ -24,8 +24,11 @@ class PhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        displayPhoto(pic: photo)
-        managedObjectContext = CoreDataStack().persistentContainer.viewContext
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+          displayPhoto(pic: photo)
     }
     
     func displayPhoto(pic: String) {
@@ -33,11 +36,22 @@ class PhotoViewController: UIViewController {
         
         if let imageData: Data = try? Data(contentsOf: imageURL!){
             self.img = UIImage(data: imageData)!
+              imageView.image = img
+            
+        }else {
+            let alert = UIAlertController(title: "Error", message: "internet connection failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
+            
+            let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                self.dismiss(animated: true, completion: {})
+            })
+            alert.addAction(actionOK)
+            self.present(alert, animated: true, completion: nil)
         }
-        imageView.image = img
+      
     }
     
     func savaData() {
+        managedObjectContext = CoreDataStack().persistentContainer.viewContext
         let myFav: Favorites = Favorites(context: managedObjectContext)
         myFav.latitude = latitude
         myFav.longitude = longitude
