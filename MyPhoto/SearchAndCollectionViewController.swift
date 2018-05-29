@@ -343,6 +343,8 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     
                 }
+            } else{
+             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
         }
         

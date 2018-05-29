@@ -156,12 +156,12 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
         FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { (weather, error) in
             
             guard (error == nil) else {
-                print("\(error!)")
-                
-                SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+           
+              
                 let alert = UIAlertController(title: "Error", message: "Weather retrieval failed check your internet connection", preferredStyle: UIAlertControllerStyle.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in
+                    SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     self.dismiss(animated: true, completion: {})
                 })
                 
