@@ -294,7 +294,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="837.68115942028987" y="130.43478260869566"/>
+            <point key="canvasLocation" x="838" y="134"/>
         </scene>
         <!--Saved Cities View Controller-->
         <scene sceneID="ajA-AU-OeG">
