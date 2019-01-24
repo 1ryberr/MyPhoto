@@ -70,7 +70,7 @@ class SavedCitiesViewController: UIViewController {
         let timingFunctions = NSMutableArray(capacity: bounceAnimation.values!.count)
         
         for _ in  0...bounceAnimation.values!.count {
-            timingFunctions.add(CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut))
+            timingFunctions.add(CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut))
         }
         bounceAnimation.timingFunctions = timingFunctions as NSArray as? [CAMediaTimingFunction]
         bounceAnimation.isRemovedOnCompletion = true
@@ -96,9 +96,9 @@ class SavedCitiesViewController: UIViewController {
    
     func labelFunction(label: UILabel, text: String, color: UIColor) {
         
-        let attrs = [NSAttributedStringKey.foregroundColor: color,
-                     NSAttributedStringKey.font: UIFont(name: "Georgia-Bold", size: 24)!,
-                     NSAttributedStringKey.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
+        let attrs = [NSAttributedString.Key.foregroundColor: color,
+                     NSAttributedString.Key.font: UIFont(name: "Georgia-Bold", size: 24)!,
+                     NSAttributedString.Key.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
         
         let string = NSAttributedString(string: text, attributes: attrs)
         label.attributedText = string
@@ -125,9 +125,9 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
         return true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
-        if editingStyle == UITableViewCellEditingStyle.delete {
+        if editingStyle == UITableViewCell.EditingStyle.delete {
             
             deleteData(indexPath: indexPath )
             favCity.remove(at: indexPath.row)
@@ -158,9 +158,9 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             guard (error == nil) else {
            
               
-                let alert = UIAlertController(title: "Error", message: "Weather retrieval failed check your internet connection", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Weather retrieval failed check your internet connection", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     self.dismiss(animated: true, completion: {})
                 })

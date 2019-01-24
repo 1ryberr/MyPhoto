@@ -49,9 +49,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
             guard (error == nil) else {
         
-                let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
@@ -66,9 +66,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
              self.getMapByAddress(map:self.map, address:cityState)
                 
             }else {
-                let alert = UIAlertController(title: "Error", message: "Geolocation not vaild try another.", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Geolocation not vaild try another.", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                     self.removePinCoordinates()
                     self.dismiss(animated: true, completion: {})
                 })
@@ -115,9 +115,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func labelFunction(label: UILabel, text: String, color: UIColor) {
         
-        let attrs = [NSAttributedStringKey.foregroundColor: color,
-                     NSAttributedStringKey.font: UIFont(name: "Georgia-Bold", size: 24)!,
-                     NSAttributedStringKey.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
+        let attrs = [NSAttributedString.Key.foregroundColor: color,
+                     NSAttributedString.Key.font: UIFont(name: "Georgia-Bold", size: 24)!,
+                     NSAttributedString.Key.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
         
         let string = NSAttributedString(string: text, attributes: attrs)
         label.attributedText = string
@@ -126,7 +126,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func flipMap() {
         
-        let transitionOptions: UIViewAnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
+        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
         UIView.transition(with: map, duration: 1.0, options: transitionOptions, animations: {
         })
         self.map.isHidden = true
@@ -138,7 +138,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func flip() {
         
-        let transitionOptions: UIViewAnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
+        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
         UIView.transition(with: searchView, duration: 1.0, options: transitionOptions, animations: {
         })
         self.searchView.isHidden = true
@@ -159,9 +159,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         geocoder.geocodeAddressString(address){ placemarks, error in
             guard (error == nil) else {
                 print("\(error!)")
-                let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Geolocation has failed! Try again later.", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
@@ -172,7 +172,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             if let validPlacemark = placemarks?[0]{
                 
                 self.coordinates = (validPlacemark.location?.coordinate)!
-                let span = MKCoordinateSpanMake(0.05, 0.05)
+                let span = MKCoordinateSpan.init(latitudeDelta: 0.05, longitudeDelta: 0.05)
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
                 self.map.setRegion(region, animated: true)
                 
@@ -203,9 +203,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         
         FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages, pages,error in
             guard error == nil else {
-                let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                  SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     self.dismiss(animated: true, completion: {})
                 })
@@ -240,9 +240,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
             
             guard error == nil else {
-                let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                    SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                     self.dismiss(animated: true, completion: {})
                 })
@@ -284,13 +284,13 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func updateCurrentLocation(){
         
-        let attrs = [NSAttributedStringKey.foregroundColor:UIColor.white,
-                     NSAttributedStringKey.font: UIFont(name: "Georgia-Bold", size: 24)!,
-                     NSAttributedStringKey.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
+        let attrs = [NSAttributedString.Key.foregroundColor:UIColor.white,
+                     NSAttributedString.Key.font: UIFont(name: "Georgia-Bold", size: 24)!,
+                     NSAttributedString.Key.textEffect: NSAttributedString.TextEffectStyle.letterpressStyle as NSString]
         
         let string = NSAttributedString(string: "Updating Current Location", attributes: attrs)
         
-        refreshControls.addTarget(self, action: #selector(self.refresh), for: UIControlEvents.valueChanged)
+        refreshControls.addTarget(self, action: #selector(self.refresh), for: UIControl.Event.valueChanged)
         refreshControls.attributedTitle = string
         refreshControls.tintColor = .white
         collectionView?.refreshControl = refreshControls
@@ -439,7 +439,7 @@ extension  SearchAndCollectionViewController{
         
         let spinnerView = UIView.init(frame: onView.bounds)
         spinnerView.backgroundColor = UIColor.clear
-        let ai  = UIActivityIndicatorView.init(activityIndicatorStyle: .whiteLarge)
+        let ai  = UIActivityIndicatorView.init(style: .whiteLarge)
         ai.startAnimating()
         ai.center = spinnerView.center
         DispatchQueue.main.async {

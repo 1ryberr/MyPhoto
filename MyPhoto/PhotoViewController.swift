@@ -39,9 +39,9 @@ class PhotoViewController: UIViewController {
               imageView.image = img
             
         }else {
-            let alert = UIAlertController(title: "Error", message: "internet connection failed! Try again later.", preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "Error", message: "internet connection failed! Try again later.", preferredStyle: UIAlertController.Style.alert)
             
-            let actionOK = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in
+            let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                 self.dismiss(animated: true, completion: {})
             })
             alert.addAction(actionOK)
