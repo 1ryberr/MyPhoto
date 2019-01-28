@@ -107,6 +107,7 @@ class SavedCitiesViewController: UIViewController {
 }
 
 extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return favCity.count
     }

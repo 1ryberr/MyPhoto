@@ -51,10 +51,10 @@ class FlickrClient: NSObject{
                 
                 pages = (code.photos?.pages)!
                 
-                for photo in (code.photos?.photo)!{
-                   
+                for photo in (code.photos?.photo)! {
                     myImages.append(photo.url_m)
                 }
+                
             }catch {
                 sendError("Could not parse the data as JSON: '\(data)'")
                 return

@@ -14,17 +14,17 @@ struct FlickrPagedImageResult:  Codable {
     let stat: String
     
 }
+
 struct Photos: Codable {
     let photo: [Photo]
     let page: Int
     let pages: Int
     let perpage: Int
     let total: String
-    
 }
+
 struct Photo: Codable {
     let url_m: String
-    
 }
 
 struct OpenWeatherData: Codable {

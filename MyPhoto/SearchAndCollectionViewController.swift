@@ -126,7 +126,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func flipMap() {
         
-        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
+        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromRight, .showHideTransitionViews]
         UIView.transition(with: map, duration: 1.0, options: transitionOptions, animations: {
         })
         self.map.isHidden = true
@@ -138,7 +138,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     func flip() {
         
-        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
+        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromRight, .showHideTransitionViews]
         UIView.transition(with: searchView, duration: 1.0, options: transitionOptions, animations: {
         })
         self.searchView.isHidden = true
@@ -191,8 +191,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         let methodParameters = [
             Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod,
             Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey,
-            Constants.FlickrParameterKeys.Latitude:  "\(self.coordinates.latitude)",
-            Constants.FlickrParameterKeys.Longitude: "\(self.coordinates.longitude)",
+            Constants.FlickrParameterKeys.Latitude:  "\(coordinates.latitude)",
+            Constants.FlickrParameterKeys.Longitude: "\(coordinates.longitude)",
             Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
             Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
             Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)",
@@ -272,7 +272,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         if map.isHidden{
             SearchBTN.title = "Search"
             flip()
-        }else{
+        }else if searchView.isHidden {
             SearchBTN.title = "Map"
             flipMap()
         }
