@@ -11,11 +11,11 @@ import CoreData
 
 class PhotoViewController: UIViewController {
     
-    var photo: String!
-    var img : UIImage!
-    var city: String!
-    var longitude: Double!
-    var latitude: Double!
+    var photo: URL?
+    var img : UIImage?
+    var city: String?
+    var longitude: Double?
+    var latitude: Double?
     var managedObjectContext: NSManagedObjectContext!
     
     @IBOutlet weak var imageView: UIImageView!
@@ -28,11 +28,11 @@ class PhotoViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         
-          displayPhoto(pic: photo)
+          displayPhoto(pic: photo!)
     }
     
-    func displayPhoto(pic: String) {
-        let imageURL = URL(string: photo)
+    func displayPhoto(pic: URL) {
+        let imageURL =  photo
         
         if let imageData: Data = try? Data(contentsOf: imageURL!){
             self.img = UIImage(data: imageData)!
@@ -53,10 +53,10 @@ class PhotoViewController: UIViewController {
     func savaData() {
         managedObjectContext = CoreDataStack().persistentContainer.viewContext
         let myFav: Favorites = Favorites(context: managedObjectContext)
-        myFav.latitude = latitude
-        myFav.longitude = longitude
+        myFav.latitude = latitude!
+        myFav.longitude = longitude!
         myFav.city = city
-        let imageURL = URL(string: photo)
+        let imageURL =  photo
         if let imageData = try? Data(contentsOf: imageURL!){
             myFav.photo = imageData as NSData as Data
         }

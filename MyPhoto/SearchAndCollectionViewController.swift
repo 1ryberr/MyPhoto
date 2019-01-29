@@ -26,7 +26,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBOutlet weak var flipViewBTN: UIBarButtonItem!
     
     var coordinates = CLLocationCoordinate2D()
-    var photos = [String]()
+    var photos = [URL]()
     var weather = [Double]()
     var img: UIImage!
     let locationManager = CLLocationManager()
@@ -332,12 +332,12 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
         
-        let imageUrl = URL(string: self.photos[indexPath.item])
+        let imageUrl =  self.photos[indexPath.item]
         
-        FlickrClient.sharedInstance.downloadImage(url: imageUrl!){(image, error)in
-            let loadedImage: UIImage!
+        FlickrClient.sharedInstance.downloadImage(url: imageUrl){(image, error)in
+            let loadedImage: UIImage
             if error == nil {
-                loadedImage = image
+                loadedImage = image!
                 DispatchQueue.main.async {
                     cell.photoImage.image = loadedImage
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)

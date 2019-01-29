@@ -14,10 +14,10 @@ class FlickrClient: NSObject{
     
     static let sharedInstance = FlickrClient()
     private override init() {}
-    func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [String]?,_ pages: Int, _ error: NSError?) -> Void) -> URLSessionDataTask {
+    func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [URL]?,_ pages: Int, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         
-        var myImages = [String]()
+        var myImages = [URL]()
         let url = URL(string: url)!
         let request = URLRequest(url: url)
         
@@ -52,7 +52,7 @@ class FlickrClient: NSObject{
                 pages = (code.photos?.pages)!
                 
                 for photo in (code.photos?.photo)! {
-                    myImages.append(photo.url_m)
+                    myImages.append(photo.url!)
                 }
                 
             }catch {
@@ -62,7 +62,7 @@ class FlickrClient: NSObject{
             if !(code.photos?.photo.isEmpty)! {
                 completionHandlerForPOST(myImages, pages,nil)
             }else{
-                let myImages: [String] = []
+                let myImages: [URL] = []
                 completionHandlerForPOST(myImages,0, nil)
             }
         }
