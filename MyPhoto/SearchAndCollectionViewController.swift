@@ -32,7 +32,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
     var city: String!
-    var numberOfPages: Int = 0
     let refreshControls = UIRefreshControl()
     
     override func viewDidLoad() {
@@ -195,13 +194,13 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.Longitude: "\(coordinates.longitude)",
             Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
             Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
-            Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(numberOfPages))) + 1)",
+            Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(10))) + 1)",
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
         
-        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages, pages,error in
+        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages,error in
             guard error == nil else {
                 let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
@@ -213,7 +212,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 self.present(alert, animated: true, completion: nil)
                 return
             }
-            self.numberOfPages = pages
             self.photos = myImages!
             
             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)

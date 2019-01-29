@@ -12,17 +12,10 @@ import Foundation
 struct FlickrPagedImageResult:  Codable {
     let photos: Photos?
     let stat: String
-    
 }
-
 struct Photos: Codable {
     let photo: [Photo]
-  //  let page: Int
-    let pages: Int
- //   let perpage: Int
- //   let total: String
 }
-
 struct Photo: Codable{
     let url: URL?
     enum CodingKeys: String, CodingKey{
@@ -33,7 +26,6 @@ struct Photo: Codable{
 struct OpenWeatherData: Codable {
     var main: Main
 }
-
 struct Main: Codable {
     let temp: Double
     let humidity: Double
