@@ -12,9 +12,9 @@ import CoreLocation
 
 class SearchAndCollectionViewController: UIViewController,CLLocationManagerDelegate {
     
-    @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var searchView: UIView!
-    @IBOutlet weak var map: MKMapView!
+    @IBOutlet weak var searchTextField: UITextField?
+    @IBOutlet weak var searchView: UIView?
+    @IBOutlet weak var map: MKMapView?
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var noImage: UILabel!
     @IBOutlet weak var SearchBTN: UIBarButtonItem!    
@@ -39,7 +39,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         AppUtility.lockOrientation(.portrait)
         getCurrentLocation()
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
-        map.addGestureRecognizer(longPress)
+        map?.addGestureRecognizer(longPress)
         updateCurrentLocation()
         
     }
@@ -62,9 +62,10 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             if placemarks![0].locality != nil {
             
              let cityState = "\(placemarks![0].locality!)" + "," + "\(placemarks![0].administrativeArea!)"
-             self.getMapByAddress(map:self.map, address:cityState)
+                self.getMapByAddress(map:self.map!, address:cityState)
                 
-            }else {
+            } else {
+                
                 let alert = UIAlertController(title: "Error", message: "Geolocation not vaild try another.", preferredStyle: UIAlertController.Style.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
@@ -72,9 +73,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                     self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
-                self.present(alert, animated: true, completion: nil)            }
-      
-     
+                self.present(alert, animated: true, completion: nil)
+                
+            }
         })
     }
     
@@ -96,8 +97,8 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         if press.state == .began{
             removePinCoordinates()
             let longTouchPoint = press.location(in: map)
-            let coordinates = map.convert(longTouchPoint, toCoordinateFrom: map)
-            pinCoordinates(coordinates)
+            let coordinates = map?.convert(longTouchPoint, toCoordinateFrom: map)
+            pinCoordinates(coordinates!)
         }
     }
     
@@ -109,7 +110,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         let getLon: CLLocationDegrees = coordinates.longitude
         let touchPoint: CLLocation =  CLLocation(latitude: getLat, longitude: getLon)
         getCity(touchPoint)
-        map.addAnnotation(annotation)
+        map?.addAnnotation(annotation)
     }
     
     func labelFunction(label: UILabel, text: String, color: UIColor) {
@@ -126,30 +127,30 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     func flipMap() {
         
         let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromRight, .showHideTransitionViews]
-        UIView.transition(with: map, duration: 1.0, options: transitionOptions, animations: {
+        UIView.transition(with: map! , duration: 1.0, options: transitionOptions, animations: {
         })
-        self.map.isHidden = true
-        UIView.transition(with: searchView, duration: 1.0, options: transitionOptions, animations: {
+        self.map?.isHidden = true
+        UIView.transition(with: searchView!, duration: 1.0, options: transitionOptions, animations: {
         })
-        self.searchView.isHidden = false
+        self.searchView?.isHidden = false
         
     }
     
     func flip() {
         
         let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromRight, .showHideTransitionViews]
-        UIView.transition(with: searchView, duration: 1.0, options: transitionOptions, animations: {
+        UIView.transition(with: searchView!, duration: 1.0, options: transitionOptions, animations: {
         })
-        self.searchView.isHidden = true
-        UIView.transition(with: map, duration: 1.0, options: transitionOptions, animations: {
+        self.searchView?.isHidden = true
+        UIView.transition(with: map!, duration: 1.0, options: transitionOptions, animations: {
         })
-        self.map.isHidden = false
+        self.map!.isHidden = false
         
     }
     
     func removePinCoordinates() {
-        let annotations = map.annotations
-        map.removeAnnotations(annotations)
+        let annotations = map!.annotations
+        map?.removeAnnotations(annotations)
     }
     
     func getMapByAddress(map:MKMapView, address:String) {
@@ -173,7 +174,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 self.coordinates = (validPlacemark.location?.coordinate)!
                 let span = MKCoordinateSpan.init(latitudeDelta: 0.05, longitudeDelta: 0.05)
                 let region = MKCoordinateRegion(center: (self.coordinates), span: span)
-                self.map.setRegion(region, animated: true)
+                self.map?.setRegion(region, animated: true)
                 
                 self.getFlickData(coordinates: self.coordinates)
                 self.getWeatherData(coordinates: self.coordinates)
@@ -198,25 +199,25 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         var spinnerView: UIView!
-        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
+        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView!)
         
-        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {myImages,error in
+        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {[weak self] myImages,error in
             guard error == nil else {
                 let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
-                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
+                let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { [weak self] action in
                  SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                    self.dismiss(animated: true, completion: {})
+                    self?.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 return
             }
-            self.photos = myImages!
+            self?.photos = myImages!
             
             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
+                self?.collectionView.reloadData()
             }
             
         })
@@ -233,30 +234,30 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
         
         var spinnerView: UIView!
-        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView)
+        spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView!)
         
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {[weak self] weatherData,error in
             
             guard error == nil else {
                 let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                    SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                    self.dismiss(animated: true, completion: {})
+                    self?.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 return
             }
             
-            self.weather = weatherData!
+            self?.weather = weatherData!
             
             DispatchQueue.main.async {
                 
-                self.tempLabel.text = "\(Int(round((weatherData?[0])!)))"
-                self.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
-                self.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
-                self.lowsLabel.text = "\(Int(round((weatherData?[3])!)))"
+                self?.tempLabel.text = "\(Int(round((weatherData?[0])!)))"
+                self?.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
+                self?.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
+                self?.lowsLabel.text = "\(Int(round((weatherData?[3])!)))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
             
@@ -267,10 +268,10 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     @IBAction func SearchActBTN(_ sender: Any) {
         
-        if map.isHidden{
+        if (map?.isHidden)!{
             SearchBTN.title = "Search"
             flip()
-        }else if searchView.isHidden {
+        }else if (searchView?.isHidden)! {
             SearchBTN.title = "Map"
             flipMap()
         }
@@ -297,9 +298,9 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     @IBAction func mapBTN(_ sender: Any) {
         
-        searchTextField.resignFirstResponder()
-        getMapByAddress(map: map, address: searchTextField.text!)
-        searchTextField.text = ""
+        searchTextField?.resignFirstResponder()
+        getMapByAddress(map: map!, address: (searchTextField?.text)!)
+        searchTextField?.text = ""
         
     }
     
@@ -332,7 +333,7 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         
         let imageUrl =  self.photos[indexPath.item]
         
-        FlickrClient.sharedInstance.downloadImage(url: imageUrl){(image, error)in
+        FlickrClient.sharedInstance.downloadImage(url: imageUrl) { image, error in
             let loadedImage: UIImage
             if error == nil {
                 loadedImage = image!
@@ -398,7 +399,6 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
             let queryItem = URLQueryItem(name: key, value: "\(value)")
             components.queryItems!.append(queryItem)
         }
-        
         return components.url!
     }
     
@@ -419,7 +419,7 @@ extension SearchAndCollectionViewController: MKMapViewDelegate {
         
         let identifier: String = "Pin"
         
-        var annotationView = self.map.dequeueReusableAnnotationView(withIdentifier: identifier)
+        var annotationView = self.map?.dequeueReusableAnnotationView(withIdentifier: identifier)
         if annotationView == nil{
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             annotationView?.canShowCallout = false

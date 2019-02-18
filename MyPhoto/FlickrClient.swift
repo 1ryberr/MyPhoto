@@ -15,7 +15,7 @@ class FlickrClient: NSObject{
     static let sharedInstance = FlickrClient()
     private override init() {}
     func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [URL]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
-        var myImages = [URL]()
+       
         let url = URL(string: url)!
         let request = URLRequest(url: url)
         
@@ -42,20 +42,21 @@ class FlickrClient: NSObject{
                 return
             }
             
-            let code : FlickrPagedImageResult
-            let pages: Int
+            let parsedResults : FlickrPagedImageResult
+       
             do {
-                code = try JSONDecoder().decode(FlickrPagedImageResult.self, from: data)
-                
-                for photo in (code.photos?.photo)! {
-                    myImages.append(photo.url!)
-                }
+                parsedResults = try JSONDecoder().decode(FlickrPagedImageResult.self, from: data)
                 
             }catch {
                 sendError("Could not parse the data as JSON: '\(data)'")
                 return
             }
-            if !(code.photos?.photo.isEmpty)! {
+              var myImages = [URL]()
+            for photo in (parsedResults.photos?.photo)! {
+                myImages.append(photo.url!)
+            }
+            
+            if !(parsedResults.photos?.photo.isEmpty)! {
                 completionHandlerForPOST(myImages,nil)
             }else{
                 let myImages: [URL] = []

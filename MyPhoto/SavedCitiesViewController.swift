@@ -15,11 +15,8 @@ class SavedCitiesViewController: UIViewController {
     var managedObjectContext: NSManagedObjectContext!
     var favCity = [Favorites]()
     var weather = [Double]()
-   
-    
-    
+
     @IBOutlet weak var tableView: UITableView!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -154,7 +151,7 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             Constants.OpenWeatherKeys.Units: Constants.OpenWeatherValues.Units,
             Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
         
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { (weather, error) in
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { [weak self] weather, error in
             
             guard (error == nil) else {
            
@@ -163,24 +160,24 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                    self.dismiss(animated: true, completion: {})
+                    self?.dismiss(animated: true, completion: {})
                 })
                 
                 alert.addAction(actionOK)
                 
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 
                 return
             }
             
-            self.weather = weather!
+            self?.weather = weather!
             
             DispatchQueue.main.async {
-                self.addBounceAnimationToView(view: cell)
-                cell.tempLabel.text = "\(Int(round((self.weather[0]))))"
-                cell.humidityLabel.text = "\(Int(round((self.weather[1]))))"
-                cell.highsLabels.text = "\(Int(round((self.weather[2]))))"
-                cell.lowsLabel.text = "\(Int(round((self.weather[3]))))"
+                self?.addBounceAnimationToView(view: cell)
+                cell.tempLabel.text = "\(Int(round(((self?.weather[0])!))))"
+                cell.humidityLabel.text = "\(Int(round(((self?.weather[1])!))))"
+                cell.highsLabels.text = "\(Int(round(((self?.weather[2])!))))"
+                cell.lowsLabel.text = "\(Int(round(((self?.weather[3])!))))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
         });
