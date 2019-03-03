@@ -110,10 +110,10 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! FavCityTableViewCell
-        cell.uiImageView.image = UIImage(data: favCity[indexPath.row].photo!)
-        labelFunction(label:cell.labelView, text: favCity[indexPath.row].city!, color: UIColor.red)
-        return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as? FavCityTableViewCell
+        cell?.uiImageView.image = UIImage(data: favCity[indexPath.row].photo!)
+        labelFunction(label:(cell?.labelView)!, text: favCity[indexPath.row].city!, color: UIColor.red)
+        return cell!
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 130
@@ -150,10 +150,10 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             Constants.OpenWeatherKeys.TheType: Constants.OpenWeatherValues.TheType,
             Constants.OpenWeatherKeys.Units: Constants.OpenWeatherValues.Units,
             Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
-        
+     
         FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { [weak self] weather, error in
             
-            guard (error == nil) else {
+              guard (error == nil) else {
            
               
                 let alert = UIAlertController(title: "Error", message: "Weather retrieval failed check your internet connection", preferredStyle: UIAlertController.Style.alert)

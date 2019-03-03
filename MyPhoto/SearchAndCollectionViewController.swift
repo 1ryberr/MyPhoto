@@ -61,7 +61,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             
             if placemarks![0].locality != nil {
             
-             let cityState = "\(placemarks![0].locality!)" + "," + "\(placemarks![0].administrativeArea!)"
+             let cityState = "\(placemarks![0].locality!), \(placemarks![0].administrativeArea!)"
                 self.getMapByAddress(map:self.map!, address:cityState)
                 
             } else {

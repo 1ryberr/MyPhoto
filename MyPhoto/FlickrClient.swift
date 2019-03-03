@@ -14,6 +14,7 @@ class FlickrClient: NSObject{
     
     static let sharedInstance = FlickrClient()
     private override init() {}
+     @discardableResult
     func displayImageFromFlickrBySearch(url: String, completionHandlerForPOST: @escaping (_ myImages: [URL]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
        
         let url = URL(string: url)!
@@ -28,7 +29,7 @@ class FlickrClient: NSObject{
             }
             
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error?.localizedDescription)")
+                sendError("There was an error with your request: \(String(describing: error?.localizedDescription))")
                 return
             }
             
@@ -66,7 +67,7 @@ class FlickrClient: NSObject{
         task.resume()
         return task
     }
-    
+    @discardableResult
     func displayWeatherBySearch(url: String, completionHandlerForPOST: @escaping (_ weather: [Double]?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         var weatherData = [Double]()
@@ -82,7 +83,7 @@ class FlickrClient: NSObject{
             }
             
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error?.localizedDescription )")
+                sendError("There was an error with your request: \(String(describing: error?.localizedDescription ))")
                 return
             }
             
