@@ -14,7 +14,7 @@ class SavedCitiesViewController: UIViewController {
     
     var managedObjectContext: NSManagedObjectContext!
     var favCity = [Favorites]()
-    var weather = [Double]()
+    var weather: OpenWeatherData?
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -174,10 +174,10 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             
             DispatchQueue.main.async {
                 self?.addBounceAnimationToView(view: cell)
-                cell.tempLabel.text = "\(Int(round(((self?.weather[0])!))))"
-                cell.humidityLabel.text = "\(Int(round(((self?.weather[1])!))))"
-                cell.highsLabels.text = "\(Int(round(((self?.weather[2])!))))"
-                cell.lowsLabel.text = "\(Int(round(((self?.weather[3])!))))"
+                cell.tempLabel.text = "\(Int(self?.weather?.main.temp ?? 0))"
+                cell.humidityLabel.text = "\(Int(self?.weather?.main.humidity ?? 0))"
+                cell.highsLabels.text = "\(Int(self?.weather?.main.tempMax ?? 0))"
+                cell.lowsLabel.text = "\(Int(self?.weather?.main.tempMin ?? 0))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
         });

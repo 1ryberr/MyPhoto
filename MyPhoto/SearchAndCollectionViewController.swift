@@ -27,7 +27,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     
     var coordinates = CLLocationCoordinate2D()
     var photos = [URL]()
-    var weather = [Double]()
+    var weather: OpenWeatherData?
     var img: UIImage!
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
@@ -41,7 +41,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(press:)))
         map?.addGestureRecognizer(longPress)
         updateCurrentLocation()
-        
+
     }
     
     func getCity(_ lastLocation: CLLocation) {
@@ -254,10 +254,10 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             
             DispatchQueue.main.async {
                 
-                self?.tempLabel.text = "\(Int(round((weatherData?[0])!)))"
-                self?.humidityLabel.text = "\(Int(round((weatherData?[1])!)))"
-                self?.highsLabels.text = "\(Int(round((weatherData?[2])!)))"
-                self?.lowsLabel.text = "\(Int(round((weatherData?[3])!)))"
+                self?.tempLabel.text = "\(Int(self?.weather?.main.temp ?? 0))"
+                self?.humidityLabel.text = "\(Int(self?.weather?.main.humidity ?? 0))"
+                self?.highsLabels.text = "\(Int(self?.weather?.main.tempMax ?? 0))"
+                self?.lowsLabel.text = "\(Int(self?.weather?.main.tempMin ?? 0))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
             
@@ -332,15 +332,15 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
         
         let imageUrl =  self.photos[indexPath.item]
+       cell.layoutSubviews()
         
-        FlickrClient.sharedInstance.downloadImage(url: imageUrl) { image, error in
+       cell.downloadImage(url: imageUrl) { image, error in
             let loadedImage: UIImage
             if error == nil {
                 loadedImage = image!
                 DispatchQueue.main.async {
                     cell.photoImage.image = loadedImage
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                    
                 }
             } else{
              SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
