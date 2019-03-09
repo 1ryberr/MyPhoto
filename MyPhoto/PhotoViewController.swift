@@ -11,12 +11,14 @@ import CoreData
 
 class PhotoViewController: UIViewController {
     
-    var photo: URL?
-    var img : UIImage?
-    var city: String?
-    var longitude: Double?
-    var latitude: Double?
-    var managedObjectContext: NSManagedObjectContext!
+    private var photo: URL?
+    private var img : UIImage?
+    private var city: String?
+    private var longitude: Double?
+    private var latitude: Double?
+    private var managedObjectContext: NSManagedObjectContext!
+    
+    
     
     @IBOutlet weak var imageView: UIImageView!
    
@@ -29,6 +31,20 @@ class PhotoViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         
           displayPhoto(pic: photo!)
+    }
+    
+    func setLongitude(longitude: Double){
+        self.longitude = longitude
+    }
+    func setLatitude(latitude: Double){
+        self.latitude = latitude
+    }
+    func setCity(city: String){
+        self.city = city
+    }
+    
+    func setPhoto(photo: URL){
+        self.photo = photo
     }
     
     func displayPhoto(pic: URL) {

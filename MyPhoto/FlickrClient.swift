@@ -61,7 +61,7 @@ class FlickrClient: NSObject{
                 completionHandlerForPOST(myImages,nil)
             }else{
                 let myImages: [URL] = []
-                completionHandlerForPOST(myImages, error! as NSError)
+                completionHandlerForPOST(myImages, error as NSError?)
             }
         }
         task.resume()
@@ -105,9 +105,11 @@ class FlickrClient: NSObject{
             }catch{
                 sendError("Could not parse the data as JSON: '\(data)'")
             }
-            
+            if weather != nil {
             completionHandlerForPOST(weather, nil)
-            
+            }else {
+            completionHandlerForPOST(nil, error as NSError?)
+            }
         }
         task.resume()
         
@@ -122,7 +124,7 @@ struct AppUtility {
     static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
         
         if let delegate = UIApplication.shared.delegate as? AppDelegate {
-            delegate.orientationLock = orientation
+            delegate.setOrientation(orientation: orientation) 
         }
     }
     

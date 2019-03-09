@@ -12,9 +12,9 @@ import CoreLocation
 
 class SavedCitiesViewController: UIViewController {
     
-    var managedObjectContext: NSManagedObjectContext!
-    var favCity = [Favorites]()
-    var weather: OpenWeatherData?
+    private var managedObjectContext: NSManagedObjectContext!
+    private var favCity = [Favorites]()
+    private var weather: OpenWeatherData?
 
     @IBOutlet weak var tableView: UITableView!
     

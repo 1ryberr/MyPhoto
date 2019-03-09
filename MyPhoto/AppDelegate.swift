@@ -13,10 +13,12 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    var stack = CoreDataStack()
-     var orientationLock = UIInterfaceOrientationMask.all
+    private var stack = CoreDataStack()
+    private var orientationLock = UIInterfaceOrientationMask.all
     
-    
+    func setOrientation(orientation: UIInterfaceOrientationMask){
+        self.orientationLock = orientation
+    }
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         return true
     }

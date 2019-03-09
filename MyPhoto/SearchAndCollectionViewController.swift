@@ -25,14 +25,14 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var flipViewBTN: UIBarButtonItem!
     
-    var coordinates = CLLocationCoordinate2D()
-    var photos = [URL]()
-    var weather: OpenWeatherData?
-    var img: UIImage!
-    let locationManager = CLLocationManager()
-    let geocoder = CLGeocoder()
-    var city: String!
-    let refreshControls = UIRefreshControl()
+     private var coordinates: CLLocationCoordinate2D?
+     private var photos = [URL]()
+     private var weather: OpenWeatherData?
+     private var img: UIImage!
+     private let locationManager = CLLocationManager()
+     private let geocoder = CLGeocoder()
+     private var city: String!
+     private let refreshControls = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,7 +144,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         self.searchView?.isHidden = true
         UIView.transition(with: map!, duration: 1.0, options: transitionOptions, animations: {
         })
-        self.map!.isHidden = false
+        self.map?.isHidden = false
         
     }
     
@@ -173,11 +173,11 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 
                 self.coordinates = (validPlacemark.location?.coordinate)!
                 let span = MKCoordinateSpan.init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                let region = MKCoordinateRegion(center: (self.coordinates), span: span)
+                let region = MKCoordinateRegion(center: (self.coordinates!), span: span)
                 self.map?.setRegion(region, animated: true)
                 
-                self.getFlickData(coordinates: self.coordinates)
-                self.getWeatherData(coordinates: self.coordinates)
+                self.getFlickData(coordinates: self.coordinates!)
+                self.getWeatherData(coordinates: self.coordinates!)
                 self.city = placemarks![0].name
                 self.labelFunction(label: self.cityLabel, text: self.city, color: UIColor.black)
                 
@@ -356,10 +356,10 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         
         let vc = storyboard.instantiateViewController(withIdentifier: "detail") as! PhotoViewController
         
-        vc.longitude = coordinates.longitude
-        vc.latitude = coordinates.latitude
-        vc.city = city
-        vc.photo = photos[indexPath.item]
+        vc.setLongitude(longitude: coordinates!.longitude)
+        vc.setLatitude(latitude: coordinates!.latitude)
+        vc.setCity(city: city)
+        vc.setPhoto(photo: photos[indexPath.item])
         
         present(vc, animated: true)
         
