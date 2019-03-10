@@ -12,11 +12,10 @@ import CoreLocation
 
 class SavedCitiesViewController: UIViewController {
     
-    private var managedObjectContext: NSManagedObjectContext!
+    private var managedObjectContext: NSManagedObjectContext?
     private var favCity = [Favorites]()
     private var weather: OpenWeatherData?
-
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,12 +25,12 @@ class SavedCitiesViewController: UIViewController {
     func save() {
         
         do{
-            try managedObjectContext.save()
+            try managedObjectContext?.save()
             print("saved")
             
-        }catch{
+         }catch{
             print("caught an error\(error)")
-        }
+         }
     }
     
     func loadData() {
@@ -39,7 +38,7 @@ class SavedCitiesViewController: UIViewController {
         let request: NSFetchRequest<Favorites> = Favorites.fetchRequest()
         request.returnsObjectsAsFaults = false
         do{
-            favCity = try managedObjectContext.fetch(request)
+            favCity = try (managedObjectContext?.fetch(request))!
         }catch{
             print("caught an error\(error)")
         }
@@ -51,8 +50,8 @@ class SavedCitiesViewController: UIViewController {
         let request: NSFetchRequest<Favorites> = Favorites.fetchRequest()
         request.returnsObjectsAsFaults = false
         do{
-            favCity = try managedObjectContext.fetch(request)
-            managedObjectContext.delete(favCity[indexPath.row])
+            favCity = try (managedObjectContext?.fetch(request))!
+            managedObjectContext?.delete(favCity[indexPath.row])
         }catch{
             print("caught an error\(error)")
         }
@@ -111,7 +110,7 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as? FavCityTableViewCell
-        cell?.uiImageView.image = UIImage(data: favCity[indexPath.row].photo!)
+        cell?.uiImageView?.image = UIImage(data: favCity[indexPath.row].photo!)
         labelFunction(label:(cell?.labelView)!, text: favCity[indexPath.row].city!, color: UIColor.red)
         return cell!
     }
@@ -174,10 +173,10 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             
             DispatchQueue.main.async {
                 self?.addBounceAnimationToView(view: cell)
-                cell.tempLabel.text = "\(Int(self?.weather?.main.temp ?? 0))"
-                cell.humidityLabel.text = "\(Int(self?.weather?.main.humidity ?? 0))"
-                cell.highsLabels.text = "\(Int(self?.weather?.main.tempMax ?? 0))"
-                cell.lowsLabel.text = "\(Int(self?.weather?.main.tempMin ?? 0))"
+                cell.tempLabel?.text = "\(Int(round(self?.weather?.main.temp ?? 0)))"
+                cell.humidityLabel?.text = "\(Int(round(self?.weather?.main.humidity ?? 0)))"
+                cell.highsLabels?.text = "\(Int(round(self?.weather?.main.tempMax ?? 0)))"
+                cell.lowsLabel?.text = "\(Int(round(self?.weather?.main.tempMin ?? 0)))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
         });

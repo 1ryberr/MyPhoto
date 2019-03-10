@@ -10,12 +10,12 @@ import UIKit
 
 class FavCityTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var tempLabel: UILabel!
-    @IBOutlet weak var uiImageView: UIImageView!
-    @IBOutlet weak var labelView: UILabel!
-    @IBOutlet weak var humidityLabel: UILabel!
-    @IBOutlet weak var highsLabels: UILabel!
-    @IBOutlet weak var lowsLabel: UILabel!
+    @IBOutlet weak var tempLabel: UILabel?
+    @IBOutlet weak var uiImageView: UIImageView?
+    @IBOutlet weak var labelView: UILabel?
+    @IBOutlet weak var humidityLabel: UILabel?
+    @IBOutlet weak var highsLabels: UILabel?
+    @IBOutlet weak var lowsLabel: UILabel?
     
     
     override func awakeFromNib() {
@@ -29,10 +29,10 @@ class FavCityTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         hide()
-        tempLabel.text = "0"
-        humidityLabel.text = "0"
-        highsLabels.text = "0"
-        lowsLabel.text = "0"
+        tempLabel?.text = "0"
+        humidityLabel?.text = "0"
+        highsLabels?.text = "0"
+        lowsLabel?.text = "0"
     }
     
     func animate(){
@@ -40,7 +40,6 @@ class FavCityTableViewCell: UITableViewCell {
         UIView.setAnimationDuration(0.7)
         layer.transform = CATransform3DIdentity
         alpha = 1
-        
         UIView.commitAnimations()
     }
     

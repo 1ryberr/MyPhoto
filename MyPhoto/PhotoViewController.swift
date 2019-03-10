@@ -16,7 +16,7 @@ class PhotoViewController: UIViewController {
     private var city: String?
     private var longitude: Double?
     private var latitude: Double?
-    private var managedObjectContext: NSManagedObjectContext!
+    private var managedObjectContext: NSManagedObjectContext?
     
     
     
@@ -36,9 +36,11 @@ class PhotoViewController: UIViewController {
     func setLongitude(longitude: Double){
         self.longitude = longitude
     }
+    
     func setLatitude(latitude: Double){
         self.latitude = latitude
     }
+    
     func setCity(city: String){
         self.city = city
     }
@@ -68,7 +70,7 @@ class PhotoViewController: UIViewController {
     
     func savaData() {
         managedObjectContext = CoreDataStack().persistentContainer.viewContext
-        let myFav: Favorites = Favorites(context: managedObjectContext)
+        let myFav: Favorites = Favorites(context: managedObjectContext!)
         myFav.latitude = latitude!
         myFav.longitude = longitude!
         myFav.city = city
@@ -84,7 +86,7 @@ class PhotoViewController: UIViewController {
     func save() {
         
         do{
-            try managedObjectContext.save()
+            try managedObjectContext!.save()
             print("saved")
             
         }catch{

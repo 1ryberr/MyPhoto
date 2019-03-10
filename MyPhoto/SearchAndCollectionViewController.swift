@@ -15,23 +15,23 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBOutlet weak var searchTextField: UITextField?
     @IBOutlet weak var searchView: UIView?
     @IBOutlet weak var map: MKMapView?
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var noImage: UILabel!
-    @IBOutlet weak var SearchBTN: UIBarButtonItem!    
-    @IBOutlet weak var tempLabel: UILabel!
-    @IBOutlet weak var humidityLabel: UILabel!
-    @IBOutlet weak var highsLabels: UILabel!
-    @IBOutlet weak var lowsLabel: UILabel!
-    @IBOutlet weak var cityLabel: UILabel!
-    @IBOutlet weak var flipViewBTN: UIBarButtonItem!
+    @IBOutlet weak var collectionView: UICollectionView?
+    @IBOutlet weak var noImage: UILabel?
+    @IBOutlet weak var SearchBTN: UIBarButtonItem?
+    @IBOutlet weak var tempLabel: UILabel?
+    @IBOutlet weak var humidityLabel: UILabel?
+    @IBOutlet weak var highsLabels: UILabel?
+    @IBOutlet weak var lowsLabel: UILabel?
+    @IBOutlet weak var cityLabel: UILabel?
+    @IBOutlet weak var flipViewBTN: UIBarButtonItem?
     
      private var coordinates: CLLocationCoordinate2D?
      private var photos = [URL]()
      private var weather: OpenWeatherData?
-     private var img: UIImage!
+     private var img: UIImage?
      private let locationManager = CLLocationManager()
      private let geocoder = CLGeocoder()
-     private var city: String!
+     private var city: String?
      private let refreshControls = UIRefreshControl()
     
     override func viewDidLoad() {
@@ -179,7 +179,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 self.getFlickData(coordinates: self.coordinates!)
                 self.getWeatherData(coordinates: self.coordinates!)
                 self.city = placemarks![0].name
-                self.labelFunction(label: self.cityLabel, text: self.city, color: UIColor.black)
+                self.labelFunction(label: self.cityLabel!, text: self.city!, color: UIColor.black)
                 
             }
             
@@ -217,7 +217,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             
             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             DispatchQueue.main.async {
-                self?.collectionView.reloadData()
+                self?.collectionView?.reloadData()
             }
             
         })
@@ -254,10 +254,10 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             
             DispatchQueue.main.async {
                 
-                self?.tempLabel.text = "\(Int(self?.weather?.main.temp ?? 0))"
-                self?.humidityLabel.text = "\(Int(self?.weather?.main.humidity ?? 0))"
-                self?.highsLabels.text = "\(Int(self?.weather?.main.tempMax ?? 0))"
-                self?.lowsLabel.text = "\(Int(self?.weather?.main.tempMin ?? 0))"
+                self?.tempLabel?.text = "\(Int(round(self?.weather?.main.temp ?? 0)))"
+                self?.humidityLabel?.text = "\(Int(round(self?.weather?.main.humidity ?? 0)))"
+                self?.highsLabels?.text = "\(Int(round(self?.weather?.main.tempMax ?? 0)))"
+                self?.lowsLabel?.text = "\(Int(round(self?.weather?.main.tempMin ?? 0)))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
             
@@ -269,13 +269,14 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     @IBAction func SearchActBTN(_ sender: Any) {
         
         if (map?.isHidden)!{
-            SearchBTN.title = "Search"
+            SearchBTN?.title = "Search"
             flip()
         }else if (searchView?.isHidden)! {
-            SearchBTN.title = "Map"
+            SearchBTN?.title = "Map"
             flipMap()
         }
     }
+    
     @objc func refresh() {
         getCurrentLocation()
         collectionView?.refreshControl?.endRefreshing()
@@ -318,9 +319,9 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if photos.count == 0 {
-            noImage.isHidden = false
+            noImage?.isHidden = false
         }else{
-            noImage.isHidden = true
+            noImage?.isHidden = true
         }
         return photos.count
     }
@@ -358,7 +359,7 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
         
         vc.setLongitude(longitude: coordinates!.longitude)
         vc.setLatitude(latitude: coordinates!.latitude)
-        vc.setCity(city: city)
+        vc.setCity(city: city!)
         vc.setPhoto(photo: photos[indexPath.item])
         
         present(vc, animated: true)
