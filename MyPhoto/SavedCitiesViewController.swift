@@ -150,7 +150,7 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
             Constants.OpenWeatherKeys.Units: Constants.OpenWeatherValues.Units,
             Constants.OpenWeatherKeys.AppID: Constants.OpenWeatherValues.AppID]
      
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { [weak self] weather, error in
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: { weather, error in
             
               guard (error == nil) else {
            
@@ -159,24 +159,24 @@ extension SavedCitiesViewController: UITableViewDelegate, UITableViewDataSource 
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
                     SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                    self?.dismiss(animated: true, completion: {})
+                    self.dismiss(animated: true, completion: {})
                 })
                 
                 alert.addAction(actionOK)
                 
-                self?.present(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
                 
                 return
             }
             
-            self?.weather = weather!
+            self.weather = weather!
             
             DispatchQueue.main.async {
-                self?.addBounceAnimationToView(view: cell)
-                cell.tempLabel?.text = "\(Int(round(self?.weather?.main.temp ?? 0)))"
-                cell.humidityLabel?.text = "\(Int(round(self?.weather?.main.humidity ?? 0)))"
-                cell.highsLabels?.text = "\(Int(round(self?.weather?.main.tempMax ?? 0)))"
-                cell.lowsLabel?.text = "\(Int(round(self?.weather?.main.tempMin ?? 0)))"
+                self.addBounceAnimationToView(view: cell)
+                cell.tempLabel?.text = "\(Int(round(self.weather?.main.temp ?? 0)))"
+                cell.humidityLabel?.text = "\(Int(round(self.weather?.main.humidity ?? 0)))"
+                cell.highsLabels?.text = "\(Int(round(self.weather?.main.tempMax ?? 0)))"
+                cell.lowsLabel?.text = "\(Int(round(self.weather?.main.tempMin ?? 0)))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
         });
