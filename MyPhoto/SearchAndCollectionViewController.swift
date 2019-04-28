@@ -58,7 +58,6 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                 return
             }
             
-            
             if placemarks![0].locality != nil {
             
              let cityState = "\(placemarks![0].locality!), \(placemarks![0].administrativeArea!)"
@@ -105,12 +104,12 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
     func pinCoordinates(_ coordinates: CLLocationCoordinate2D) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinates
-        
         let getLat: CLLocationDegrees = coordinates.latitude
         let getLon: CLLocationDegrees = coordinates.longitude
         let touchPoint: CLLocation =  CLLocation(latitude: getLat, longitude: getLon)
         getCity(touchPoint)
         map?.addAnnotation(annotation)
+        
     }
     
     func labelFunction(label: UILabel, text: String, color: UIColor) {
@@ -195,13 +194,13 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
             Constants.FlickrParameterKeys.Longitude: "\(coordinates.longitude)",
             Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
             Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
-            Constants.FlickrParameterKeys.Page:  "\(Int(arc4random_uniform(UInt32(10))) + 1)",
+            Constants.FlickrParameterKeys.Page:  "\(Int.random(in: 1...10))",
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView!)
         
-        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: {[weak self] myImages,error in
+        FlickrClient.sharedInstance.displayImageFromFlickrBySearch(url: "\(flickrURLFromParameters(methodParameters as [String : AnyObject]))",completionHandlerForPOST: { myImages,error in
             guard error == nil else {
                 let alert = UIAlertController(title: "Error", message: "Image download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
@@ -210,14 +209,14 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
                     self?.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
-                self?.present(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
                 return
             }
-            self?.photos = myImages!
+            self.photos = myImages!
             
             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             DispatchQueue.main.async {
-                self?.collectionView?.reloadData()
+                self.collectionView?.reloadData()
             }
             
         })
@@ -236,28 +235,28 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         var spinnerView: UIView!
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: searchView!)
         
-        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {[weak self] weatherData,error in
+        FlickrClient.sharedInstance.displayWeatherBySearch(url: "\(WeatherURLFromParameters(methodParameters as [String : AnyObject]))", completionHandlerForPOST: {weatherData,error in
             
             guard error == nil else {
                 let alert = UIAlertController(title: "Error", message: "Weather data download has failed! Check internet connection.", preferredStyle: UIAlertController.Style.alert)
                 
                 let actionOK = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: {action in
                    SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
-                    self?.dismiss(animated: true, completion: {})
+                    self.dismiss(animated: true, completion: {})
                 })
                 alert.addAction(actionOK)
-                self?.present(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
                 return
             }
             
-            self?.weather = weatherData!
+            self.weather = weatherData!
             
             DispatchQueue.main.async {
                 
-                self?.tempLabel?.text = "\(Int(round(self?.weather?.main.temp ?? 0)))"
-                self?.humidityLabel?.text = "\(Int(round(self?.weather?.main.humidity ?? 0)))"
-                self?.highsLabels?.text = "\(Int(round(self?.weather?.main.tempMax ?? 0)))"
-                self?.lowsLabel?.text = "\(Int(round(self?.weather?.main.tempMin ?? 0)))"
+                self.tempLabel?.text = "\(Int(round(self.weather?.main.temp ?? 0)))"
+                self.humidityLabel?.text = "\(Int(round(self.weather?.main.humidity ?? 0)))"
+                self.highsLabels?.text = "\(Int(round(self.weather?.main.tempMax ?? 0)))"
+                self.lowsLabel?.text = "\(Int(round(self.weather?.main.tempMin ?? 0)))"
                 SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
             }
             
@@ -294,6 +293,7 @@ class SearchAndCollectionViewController: UIViewController,CLLocationManagerDeleg
         refreshControls.attributedTitle = string
         refreshControls.tintColor = .white
         collectionView?.refreshControl = refreshControls
+        
     }
     
     
@@ -328,8 +328,8 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PhotoCollectionViewCell
-        
-        var spinnerView: UIView!
+         var spinnerView: UIView!
+       
         spinnerView = SearchAndCollectionViewController.displaySpinner(onView: cell)
         
         let imageUrl =  self.photos[indexPath.item]
@@ -341,13 +341,13 @@ extension SearchAndCollectionViewController: UICollectionViewDataSource,UICollec
                 loadedImage = image!
                 DispatchQueue.main.async {
                     cell.photoImage.image = loadedImage
-                    SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+                   SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
                 }
             } else{
-             SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+              SearchAndCollectionViewController.removeSpinner(spinner:spinnerView)
+                
             }
         }
-        
         return cell
     }
     
